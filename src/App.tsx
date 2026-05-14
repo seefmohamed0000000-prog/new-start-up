@@ -17,23 +17,38 @@ const InteractiveBackground = ({ cursorPos, activePage }: { cursorPos: { x: numb
       {/* Base dark cinematic gradient */ }
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.15),rgba(255,255,255,0))]"></div>
       
-      <AnimatePresence mode="wait">
-        {activePage === 'home' && (
-          <motion.div key="bg-home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1 }} className="absolute inset-0">
-            <img 
-              src="/hero.png" 
-              alt="Hero image"
-              className="absolute inset-0 w-full h-full object-cover"
-              onError={(e) => {
-                // Fallback if they haven't uploaded yet
-               (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?q=80&w=2560&auto=format&fit=crop";
-              }}
-            />
-            {/* Dark overlay specifically at the bottom for navigation readability if needed */}
-            <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/80 to-transparent"></div>
-          </motion.div>
-        )}
+      {/* Universal Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <motion.div
+           className="absolute inset-0 w-full h-full"
+           animate={{
+             filter: activePage === 'home' ? 'blur(0px) brightness(1)' : 'blur(30px) brightness(0.4) saturate(0.5)',
+             scale: activePage === 'home' ? 1.0 : 1.15,
+           }}
+           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <img 
+            src="/hero.png" 
+            alt="Hero image"
+            className="absolute inset-0 w-full h-full object-cover"
+            onError={(e) => {
+             (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?q=80&w=2560&auto=format&fit=crop";
+            }}
+          />
+        </motion.div>
+        
+        {/* Overall dark overlay to prevent background from overpowering content */}
+        <motion.div 
+          className="absolute inset-0 bg-black/60 mix-blend-multiply"
+          animate={{ opacity: activePage === 'home' ? 0 : 1 }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+        />
+        
+        {/* Dark overlay specifically at the bottom for navigation readability if needed */}
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/80 to-transparent"></div>
+      </div>
 
+      <AnimatePresence mode="wait">
         {activePage === 'about' && (
           <motion.div key="bg-about" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1 }} className="absolute inset-0">
             <motion.div
@@ -212,10 +227,12 @@ export default function App() {
               e.preventDefault();
               handleNav('home');
             }}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-lg md:text-2xl font-display tracking-[0.15em] cursor-pointer group flex items-center hover:scale-105 transition-transform"
+            animate={{ 
+              opacity: activePage === 'home' ? 0 : 1, 
+              y: activePage === 'home' ? -20 : 0 
+            }}
+            transition={{ duration: 0.8, delay: activePage === 'home' ? 0 : 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className={`text-lg md:text-2xl font-display tracking-[0.15em] cursor-pointer group flex items-center hover:scale-105 transition-transform ${activePage === 'home' ? 'pointer-events-none' : ''}`}
           >
             <span className="font-semibold text-white group-hover:text-amber-500 transition-colors duration-500">Seif</span>
             <span className="text-zinc-400 group-hover:text-white transition-colors duration-500 ml-1.5 md:ml-2">Mohamed</span>
@@ -223,10 +240,13 @@ export default function App() {
 
           {/* Liquid Glass Nav Pill - Center */}
           <motion.div 
-             initial={{ opacity: 0, y: -20 }}
-             animate={{ opacity: 1, y: 0 }}
-             transition={{ duration: 0.8, delay: 0.4 }}
-             className="hidden md:flex items-center gap-5 px-6 py-2.5 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)] relative overflow-hidden group/nav"
+             animate={{ 
+               opacity: activePage === 'home' ? 0 : 1, 
+               y: activePage === 'home' ? -20 : 0,
+               scale: activePage === 'home' ? 0.95 : 1
+             }}
+             transition={{ duration: 0.8, delay: activePage === 'home' ? 0 : 0.4, ease: [0.16, 1, 0.3, 1] }}
+             className={`hidden md:flex items-center gap-5 px-6 py-2.5 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)] relative overflow-hidden group/nav ${activePage === 'home' ? 'pointer-events-none' : ''}`}
           >
              {/* Inner glass highlight gradient */}
              <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent opacity-20 pointer-events-none"></div>
@@ -241,9 +261,12 @@ export default function App() {
 
           {/* Power Icon - Right */}
           <motion.div
-             initial={{ opacity: 0, x: 20 }}
-             animate={{ opacity: 1, x: 0 }}
-             transition={{ duration: 0.8, delay: 0.6 }}
+             animate={{ 
+               opacity: activePage === 'home' ? 0 : 1, 
+               y: activePage === 'home' ? -20 : 0 
+             }}
+             transition={{ duration: 0.8, delay: activePage === 'home' ? 0 : 0.5, ease: [0.16, 1, 0.3, 1] }}
+             className={activePage === 'home' ? 'pointer-events-none' : ''}
           >
             <button aria-label="Action" onClick={() => handleNav('home')} className={`h-9 w-9 flex items-center justify-center rounded-full border border-white/10 ${activePage === 'home' ? 'bg-amber-500/20' : 'bg-white/5'} hover:bg-white/10 hover:border-white/30 backdrop-blur-xl transition-all duration-300 group shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:shadow-[0_0_25px_rgba(255,183,3,0.2)]`}>
               <Power className={`w-4 h-4 ${activePage === 'home' ? 'text-amber-400' : 'text-zinc-400'} group-hover:text-amber-400 transition-colors duration-300`} strokeWidth={1.5} />
