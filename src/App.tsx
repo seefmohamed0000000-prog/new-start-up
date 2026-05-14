@@ -20,24 +20,13 @@ const InteractiveBackground = ({ cursorPos, activePage }: { cursorPos: { x: numb
       <AnimatePresence mode="wait">
         {activePage === 'home' && (
           <motion.div key="bg-home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1 }} className="absolute inset-0">
-            <motion.div
-              animate={{
-                x: [0, 80, -40, 0],
-                y: [0, 60, -80, 0],
-                scale: [1, 1.2, 0.9, 1],
-              }}
-              transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute top-[10%] left-[20%] w-[30vw] h-[30vw] max-w-[500px] max-h-[500px] rounded-full bg-amber-600/10 blur-[80px] md:blur-[120px] mix-blend-screen pointer-events-none"
+            <img 
+              src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=2000&auto=format&fit=crop" 
+              alt="Cinematic background"
+              className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen saturate-50"
             />
-            <motion.div
-              animate={{
-                x: [0, -100, 50, 0],
-                y: [0, -30, 90, 0],
-                scale: [1, 0.8, 1.1, 1],
-              }}
-              transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute bottom-[20%] right-[10%] w-[40vw] h-[40vw] max-w-[600px] max-h-[600px] rounded-full bg-zinc-800/50 blur-[80px] md:blur-[120px] mix-blend-screen pointer-events-none"
-            />
+            {/* Color overlay for mood */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-amber-900/10 mix-blend-multiply"></div>
           </motion.div>
         )}
 
@@ -205,11 +194,11 @@ export default function App() {
               className="flex-grow flex flex-col items-center justify-center px-6 relative"
             >
               <div className="text-center relative z-10 max-w-4xl mx-auto">
-                 <h1 className="text-5xl md:text-8xl lg:text-9xl font-display font-light tracking-tighter mb-4 md:mb-8 mix-blend-plus-lighter">
+                 <h1 className="text-5xl md:text-8xl lg:text-9xl font-display font-light tracking-tighter mb-4 md:mb-8 mix-blend-plus-lighter drop-shadow-2xl">
                    SEIF<br/>
-                   <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-br from-white via-zinc-200 to-zinc-600">MOHAMED</span>
+                   <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-br from-white via-zinc-200 to-zinc-600 drop-shadow-lg">MOHAMED</span>
                  </h1>
-                 <p className="text-xs md:text-sm text-zinc-400 font-light tracking-[0.3em] max-w-md mx-auto uppercase leading-relaxed mt-8">
+                 <p className="text-xs md:text-sm text-zinc-300 font-light tracking-[0.3em] max-w-md mx-auto uppercase leading-relaxed mt-8 drop-shadow-md">
                    Graphic Designer <span className="text-amber-500/50 mx-2">|</span> Visual Artist
                  </p>
                  
@@ -217,7 +206,7 @@ export default function App() {
                    whileHover={{ scale: 1.05 }}
                    whileTap={{ scale: 0.95 }}
                    onClick={() => setActivePage('about')}
-                   className="mt-12 px-8 py-3 rounded-full border border-white/20 bg-white/5 hover:bg-white/10 text-xs font-medium tracking-[0.2em] uppercase transition-all backdrop-blur-md"
+                   className="mt-12 px-8 py-3 rounded-full border border-white/20 bg-white/5 hover:bg-white/10 hover:border-amber-500/30 hover:text-amber-400 text-xs font-medium tracking-[0.2em] uppercase transition-all backdrop-blur-md shadow-[0_0_20px_rgba(0,0,0,0.2)]"
                  >
                    Explore Portfolio
                  </motion.button>
