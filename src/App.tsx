@@ -1,6 +1,6 @@
 import { Power } from "lucide-react";
 import { motion, useSpring, AnimatePresence } from "motion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const InteractiveBackground = ({ cursorPos, activePage }: { cursorPos: { x: number, y: number }, activePage: string }) => {
   // Use framer-motion spring for smooth trailing of the cursor
@@ -20,13 +20,19 @@ const InteractiveBackground = ({ cursorPos, activePage }: { cursorPos: { x: numb
       <AnimatePresence mode="wait">
         {activePage === 'home' && (
           <motion.div key="bg-home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1 }} className="absolute inset-0">
-            <img 
-              src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=2000&auto=format&fit=crop" 
-              alt="Cinematic background"
-              className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen saturate-50"
-            />
-            {/* Color overlay for mood */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-amber-900/10 mix-blend-multiply"></div>
+            <video 
+              autoPlay 
+              loop 
+              muted 
+              playsInline 
+              className="absolute inset-0 w-full h-full object-cover opacity-80 saturate-150"
+            >
+              <source src="https://assets.mixkit.co/videos/preview/mixkit-ink-swirling-in-water-in-slow-motion-1188-large.mp4" type="video/mp4" />
+            </video>
+            {/* Color overlay to integrate with theme */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+            <div className="absolute inset-0 bg-amber-600/10 mix-blend-color"></div>
+            <div className="absolute inset-0 bg-black/20 mix-blend-overlay"></div>
           </motion.div>
         )}
 
@@ -86,10 +92,25 @@ const InteractiveBackground = ({ cursorPos, activePage }: { cursorPos: { x: numb
   );
 };
 
+const PAGES = ['home', 'about', 'expertise', 'contact'];
+
 export default function App() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [cursorPos, setCursorPos] = useState({ x: -1000, y: -1000 });
-  const [activePage, setActivePage] = useState('home');
+  const [pageIndex, setPageIndex] = useState(0);
+  const [direction, setDirection] = useState(1);
+  const activePage = PAGES[pageIndex];
+
+  const handleNav = (targetPage: string) => {
+    const targetIdx = PAGES.indexOf(targetPage);
+    if (targetIdx !== pageIndex) {
+      setDirection(targetIdx > pageIndex ? 1 : -1);
+      setPageIndex(targetIdx);
+    }
+  };
+
+  const wheelTimeout = useRef<NodeJS.Timeout | null>(null);
+  const isScrolling = useRef(false);
 
   // Subtle parallax effect and precise cursor tracking
   useEffect(() => {
@@ -101,17 +122,116 @@ export default function App() {
       });
     };
     
-    // Hide cursor orb when leaving window
     const handleMouseLeave = () => setCursorPos({ x: -1000, y: -1000 });
+
+    const triggerScroll = (delta: number) => {
+      if (isScrolling.current) return;
+
+      if (delta > 0 && pageIndex < PAGES.length - 1) {
+         isScrolling.current = true;
+         setDirection(1);
+         setPageIndex(p => p + 1);
+      } else if (delta < 0 && pageIndex > 0) {
+         isScrolling.current = true;
+         setDirection(-1);
+         setPageIndex(p => p - 1);
+      }
+      
+      if (isScrolling.current) {
+         if (wheelTimeout.current) clearTimeout(wheelTimeout.current);
+         wheelTimeout.current = setTimeout(() => {
+           isScrolling.current = false;
+         }, 800);
+      }
+    };
+
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      if (Math.abs(e.deltaY) > 10) {
+        triggerScroll(e.deltaY);
+      }
+    };
+
+    let touchStartY = 0;
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0].clientY;
+    };
+    
+    const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault(); // Stop bounce
+      if (isScrolling.current) return;
+      const touchEndY = e.touches[0].clientY;
+      const diff = touchStartY - touchEndY;
+      
+      if (Math.abs(diff) > 30) {
+        triggerScroll(diff);
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (isScrolling.current) return;
+      if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+        e.preventDefault();
+        triggerScroll(1);
+      } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault();
+        triggerScroll(-1);
+      }
+    };
 
     window.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseleave", handleMouseLeave);
+    window.addEventListener("wheel", handleWheel, { passive: false });
+    window.addEventListener("touchstart", handleTouchStart, { passive: false });
+    window.addEventListener("touchmove", handleTouchMove, { passive: false });
+    window.addEventListener("keydown", handleKeyDown);
     
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseleave", handleMouseLeave);
+      window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("keydown", handleKeyDown);
+      if (wheelTimeout.current) clearTimeout(wheelTimeout.current);
     };
-  }, []);
+  }, [pageIndex]);
+
+  const pageVariants = {
+    initial: (direction: number) => ({
+      x: direction > 0 ? "20vw" : "-20vw",
+      opacity: 0,
+      scale: 0.8,
+      rotateY: direction > 0 ? -15 : 15,
+      filter: "blur(20px)",
+      z: -500
+    }),
+    animate: {
+      x: 0,
+      opacity: 1,
+      scale: 1,
+      rotateY: 0,
+      filter: "blur(0px)",
+      z: 0,
+      transition: {
+        duration: 0.8,
+        ease: [0.16, 1, 0.3, 1]
+      }
+    },
+    exit: (direction: number) => ({
+      x: direction > 0 ? "-20vw" : "20vw",
+      opacity: 0,
+      scale: 0.8,
+      rotateY: direction > 0 ? 15 : -15,
+      filter: "blur(20px)",
+      z: -500,
+      transition: {
+        duration: 0.8,
+        ease: [0.16, 1, 0.3, 1]
+      }
+    })
+  };
 
   return (
     <div className="min-h-screen bg-transparent text-white overflow-hidden relative selection:bg-amber-500/30 font-sans flex flex-col">
@@ -137,7 +257,7 @@ export default function App() {
             href="#home"
             onClick={(e) => {
               e.preventDefault();
-              setActivePage('home');
+              handleNav('home');
             }}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -159,11 +279,11 @@ export default function App() {
              <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent opacity-20 pointer-events-none"></div>
              <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none"></div>
              
-             <button onClick={() => setActivePage('about')} className={`${activePage === 'about' ? 'text-amber-400' : 'text-zinc-300'} hover:text-amber-400 text-[10px] font-medium tracking-[0.2em] uppercase transition-colors relative z-10`}>About me</button>
+             <button onClick={() => handleNav('about')} className={`${activePage === 'about' ? 'text-amber-400' : 'text-zinc-300'} hover:text-amber-400 text-[10px] font-medium tracking-[0.2em] uppercase transition-colors relative z-10`}>About me</button>
              <span className="w-[1px] h-2.5 bg-white/20 relative z-10"></span>
-             <button onClick={() => setActivePage('expertise')} className={`${activePage === 'expertise' ? 'text-amber-400' : 'text-zinc-300'} hover:text-amber-400 text-[10px] font-medium tracking-[0.2em] uppercase transition-colors relative z-10`}>Expertise</button>
+             <button onClick={() => handleNav('expertise')} className={`${activePage === 'expertise' ? 'text-amber-400' : 'text-zinc-300'} hover:text-amber-400 text-[10px] font-medium tracking-[0.2em] uppercase transition-colors relative z-10`}>Expertise</button>
              <span className="w-[1px] h-2.5 bg-white/20 relative z-10"></span>
-             <button onClick={() => setActivePage('contact')} className={`${activePage === 'contact' ? 'text-amber-400' : 'text-zinc-300'} hover:text-amber-400 text-[10px] font-medium tracking-[0.2em] uppercase transition-colors relative z-10`}>Contact</button>
+             <button onClick={() => handleNav('contact')} className={`${activePage === 'contact' ? 'text-amber-400' : 'text-zinc-300'} hover:text-amber-400 text-[10px] font-medium tracking-[0.2em] uppercase transition-colors relative z-10`}>Contact</button>
           </motion.div>
 
           {/* Power Icon - Right */}
@@ -172,7 +292,7 @@ export default function App() {
              animate={{ opacity: 1, x: 0 }}
              transition={{ duration: 0.8, delay: 0.6 }}
           >
-            <button aria-label="Action" onClick={() => setActivePage('home')} className={`h-9 w-9 flex items-center justify-center rounded-full border border-white/10 ${activePage === 'home' ? 'bg-amber-500/20' : 'bg-white/5'} hover:bg-white/10 hover:border-white/30 backdrop-blur-xl transition-all duration-300 group shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:shadow-[0_0_25px_rgba(255,183,3,0.2)]`}>
+            <button aria-label="Action" onClick={() => handleNav('home')} className={`h-9 w-9 flex items-center justify-center rounded-full border border-white/10 ${activePage === 'home' ? 'bg-amber-500/20' : 'bg-white/5'} hover:bg-white/10 hover:border-white/30 backdrop-blur-xl transition-all duration-300 group shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:shadow-[0_0_25px_rgba(255,183,3,0.2)]`}>
               <Power className={`w-4 h-4 ${activePage === 'home' ? 'text-amber-400' : 'text-zinc-400'} group-hover:text-amber-400 transition-colors duration-300`} strokeWidth={1.5} />
             </button>
           </motion.div>
@@ -180,37 +300,88 @@ export default function App() {
       </motion.div>
       
       {/* Content wrapper with fixed height to prevent scrolling, using animate presence for paginated feel */}
-      <main className="relative z-10 flex-grow flex flex-col w-full h-full pt-24 pb-12 overflow-hidden">
-        <AnimatePresence mode="wait">
+      <main className="relative z-10 flex-grow w-full h-full overflow-hidden" style={{ perspective: "2000px" }}>
+        <AnimatePresence custom={direction} mode="sync">
           
           {/* Home Section */}
           {activePage === 'home' && (
             <motion.section 
               key="page-home"
-              initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
-              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-              exit={{ opacity: 0, scale: 1.05, filter: "blur(10px)" }}
-              transition={{ duration: 0.7, ease: "easeOut" }}
-              className="flex-grow flex flex-col items-center justify-center px-6 relative"
+              custom={direction}
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="absolute inset-0 pt-24 pb-12 flex flex-col items-center justify-center px-4 md:px-10 z-20"
+              style={{ transformStyle: "preserve-3d" }}
             >
-              <div className="text-center relative z-10 max-w-4xl mx-auto">
-                 <h1 className="text-5xl md:text-8xl lg:text-9xl font-display font-light tracking-tighter mb-4 md:mb-8 mix-blend-plus-lighter drop-shadow-2xl">
-                   SEIF<br/>
-                   <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-br from-white via-zinc-200 to-zinc-600 drop-shadow-lg">MOHAMED</span>
-                 </h1>
-                 <p className="text-xs md:text-sm text-zinc-300 font-light tracking-[0.3em] max-w-md mx-auto uppercase leading-relaxed mt-8 drop-shadow-md">
-                   Graphic Designer <span className="text-amber-500/50 mx-2">|</span> Visual Artist
-                 </p>
-                 
-                 <motion.button 
-                   whileHover={{ scale: 1.05 }}
-                   whileTap={{ scale: 0.95 }}
-                   onClick={() => setActivePage('about')}
-                   className="mt-12 px-8 py-3 rounded-full border border-white/20 bg-white/5 hover:bg-white/10 hover:border-amber-500/30 hover:text-amber-400 text-xs font-medium tracking-[0.2em] uppercase transition-all backdrop-blur-md shadow-[0_0_20px_rgba(0,0,0,0.2)]"
-                 >
-                   Explore Portfolio
-                 </motion.button>
-              </div>
+              <motion.div
+                className="w-full h-full max-h-[75vh] rounded-[2rem] md:rounded-[3rem] border border-white/10 backdrop-blur-md overflow-hidden relative shadow-[0_30px_80px_rgba(0,0,0,0.8)] cursor-crosshair group flex items-center justify-center"
+                animate={{
+                  rotateX: mousePosition.y * 1.5,
+                  rotateY: mousePosition.x * -1.5,
+                }}
+                transition={{ type: "spring", stiffness: 40, damping: 25 }}
+                style={{ transformStyle: "preserve-3d" }}
+              >
+                {/* Internal interactive glow that follows cursor relative to the center */}
+                {cursorPos.x !== -1000 && (
+                  <motion.div
+                    className="absolute w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-amber-500/20 blur-[100px] pointer-events-none mix-blend-screen"
+                    animate={{
+                      x: cursorPos.x - (typeof window !== 'undefined' ? window.innerWidth / 2 : 0),
+                      y: cursorPos.y - (typeof window !== 'undefined' ? window.innerHeight / 2 : 0),
+                    }}
+                    transition={{ type: "spring", stiffness: 30, damping: 20 }}
+                    style={{ transform: "translateZ(-50px)" }}
+                  />
+                )}
+
+                {/* Central Liquid Glass Sculpture */}
+                <motion.div
+                  className="relative w-[60vw] h-[60vw] max-w-[450px] max-h-[450px] border border-white/20 backdrop-blur-xl flex items-center justify-center bg-gradient-to-br from-white/10 to-transparent shadow-[inset_0_0_100px_rgba(255,255,255,0.05)]"
+                  style={{ transform: "translateZ(80px)" }}
+                  animate={{
+                    borderRadius: ["40% 60% 60% 40% / 50% 40% 60% 50%", "60% 40% 50% 50% / 40% 60% 40% 60%", "40% 60% 60% 40% / 50% 40% 60% 50%"]
+                  }}
+                  transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+                >
+                   <motion.div
+                     className="w-[65%] h-[65%] border border-amber-500/30 backdrop-blur-md bg-gradient-to-tr from-amber-500/10 to-transparent flex items-center justify-center shadow-[inset_0_0_50px_rgba(255,183,3,0.1)]"
+                     style={{ transform: "translateZ(40px)" }}
+                     animate={{
+                       borderRadius: ["50% 50% 40% 60% / 60% 40% 50% 50%", "40% 60% 60% 40% / 50% 60% 40% 50%", "50% 50% 40% 60% / 60% 40% 50% 50%"],
+                       rotate: [0, 90, 0]
+                     }}
+                     transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+                   >
+                      <motion.div
+                        className="w-[40%] h-[40%] border border-white/30 backdrop-blur-sm bg-white/10 shadow-[0_0_30px_rgba(255,255,255,0.2)]"
+                        style={{ transform: "translateZ(40px)" }}
+                        animate={{
+                           borderRadius: ["60% 40% 50% 50% / 40% 60% 40% 60%", "40% 60% 60% 40% / 50% 40% 60% 50%", "60% 40% 50% 50% / 40% 60% 40% 60%"],
+                           rotate: [0, -180, 0]
+                        }}
+                        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+                      />
+                   </motion.div>
+                </motion.div>
+
+                {/* Framing details for architectural feel */}
+                <div className="absolute top-6 left-6 md:top-12 md:left-12 flex flex-col gap-2" style={{ transform: "translateZ(30px)" }}>
+                  <div className="text-[10px] tracking-[0.4em] text-white/50 uppercase font-display border-b border-white/10 pb-2">
+                    Interactive Void
+                  </div>
+                  <div className="text-[10px] tracking-widest text-amber-500/80 uppercase font-mono">
+                    System Active
+                  </div>
+                </div>
+
+                <div className="absolute bottom-6 right-6 md:bottom-12 md:right-12 text-[10px] tracking-[0.4em] text-white/50 uppercase font-display border-l border-white/10 pl-4" style={{ transform: "translateZ(30px)" }}>
+                  Liquid Glass Engine <br />
+                  <span className="text-amber-500/50 mt-1 block">V 1.0</span>
+                </div>
+              </motion.div>
             </motion.section>
           )}
 
@@ -218,11 +389,12 @@ export default function App() {
           {activePage === 'about' && (
             <motion.section 
               key="page-about"
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -50 }}
-              transition={{ duration: 0.7, ease: "easeOut" }}
-              className="flex-grow flex items-center justify-center px-6 relative"
+              custom={direction}
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="absolute inset-0 pt-24 pb-12 flex flex-col items-center justify-center px-6 z-20"
             >
                <div className="max-w-3xl mx-auto backdrop-blur-md bg-white/5 border border-white/10 p-8 md:p-16 rounded-3xl relative overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.5)] cursor-default group">
                  {/* Internal subtle glow */}
@@ -250,11 +422,12 @@ export default function App() {
           {activePage === 'expertise' && (
             <motion.section 
               key="page-expertise"
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -50 }}
-              transition={{ duration: 0.7, ease: "easeOut" }}
-              className="flex-grow flex flex-col justify-center px-6 relative"
+              custom={direction}
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="absolute inset-0 pt-24 pb-12 flex flex-col justify-center px-6 z-20"
             >
               <div className="max-w-6xl mx-auto w-full">
                  <h2 className="text-xs md:text-sm font-medium tracking-[0.3em] uppercase text-amber-500 mb-12 md:mb-16 flex items-center gap-4 justify-center">
@@ -295,11 +468,12 @@ export default function App() {
           {activePage === 'contact' && (
             <motion.section 
               key="page-contact"
-              initial={{ opacity: 0, scale: 1.05 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.7, ease: "easeOut" }}
-              className="flex-grow flex flex-col items-center justify-center px-6 relative"
+              custom={direction}
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="absolute inset-0 pt-24 pb-12 flex flex-col items-center justify-center px-6 z-20"
             >
               <div className="text-center w-full max-w-2xl mx-auto">
                 <h2 className="text-4xl md:text-6xl lg:text-7xl font-display font-light mb-8 mix-blend-plus-lighter">
