@@ -20,19 +20,17 @@ const InteractiveBackground = ({ cursorPos, activePage }: { cursorPos: { x: numb
       <AnimatePresence mode="wait">
         {activePage === 'home' && (
           <motion.div key="bg-home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1 }} className="absolute inset-0">
-            <video 
-              autoPlay 
-              loop 
-              muted 
-              playsInline 
-              className="absolute inset-0 w-full h-full object-cover opacity-80 saturate-150"
-            >
-              <source src="https://assets.mixkit.co/videos/preview/mixkit-ink-swirling-in-water-in-slow-motion-1188-large.mp4" type="video/mp4" />
-            </video>
-            {/* Color overlay to integrate with theme */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
-            <div className="absolute inset-0 bg-amber-600/10 mix-blend-color"></div>
-            <div className="absolute inset-0 bg-black/20 mix-blend-overlay"></div>
+            <img 
+              src="/hero.jpg" 
+              alt="Hero image"
+              className="absolute inset-0 w-full h-full object-cover"
+              onError={(e) => {
+                // Fallback if they haven't uploaded yet
+               (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?q=80&w=2560&auto=format&fit=crop";
+              }}
+            />
+            {/* Dark overlay specifically at the bottom for navigation readability if needed */}
+            <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/80 to-transparent"></div>
           </motion.div>
         )}
 
@@ -109,8 +107,7 @@ export default function App() {
     }
   };
 
-  const wheelTimeout = useRef<NodeJS.Timeout | null>(null);
-  const isScrolling = useRef(false);
+  const lastScrollTime = useRef(0);
 
   // Subtle parallax effect and precise cursor tracking
   useEffect(() => {
@@ -124,77 +121,33 @@ export default function App() {
     
     const handleMouseLeave = () => setCursorPos({ x: -1000, y: -1000 });
 
-    const triggerScroll = (delta: number) => {
-      if (isScrolling.current) return;
-
-      if (delta > 0 && pageIndex < PAGES.length - 1) {
-         isScrolling.current = true;
-         setDirection(1);
-         setPageIndex(p => p + 1);
-      } else if (delta < 0 && pageIndex > 0) {
-         isScrolling.current = true;
-         setDirection(-1);
-         setPageIndex(p => p - 1);
-      }
-      
-      if (isScrolling.current) {
-         if (wheelTimeout.current) clearTimeout(wheelTimeout.current);
-         wheelTimeout.current = setTimeout(() => {
-           isScrolling.current = false;
-         }, 800);
-      }
-    };
-
     const handleWheel = (e: WheelEvent) => {
-      e.preventDefault();
       if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
-      if (Math.abs(e.deltaY) > 10) {
-        triggerScroll(e.deltaY);
-      }
-    };
-
-    let touchStartY = 0;
-    const handleTouchStart = (e: TouchEvent) => {
-      touchStartY = e.touches[0].clientY;
-    };
-    
-    const handleTouchMove = (e: TouchEvent) => {
-      e.preventDefault(); // Stop bounce
-      if (isScrolling.current) return;
-      const touchEndY = e.touches[0].clientY;
-      const diff = touchStartY - touchEndY;
       
-      if (Math.abs(diff) > 30) {
-        triggerScroll(diff);
-      }
-    };
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (isScrolling.current) return;
-      if (e.key === 'ArrowDown' || e.key === 'PageDown') {
-        e.preventDefault();
-        triggerScroll(1);
-      } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
-        e.preventDefault();
-        triggerScroll(-1);
+      const now = Date.now();
+      if (now - lastScrollTime.current < 700) return; // Prevent rapid scrolling but feel responsive
+      
+      if (Math.abs(e.deltaY) > 20) {
+        if (e.deltaY > 0 && pageIndex < PAGES.length - 1) {
+           setDirection(1);
+           setPageIndex(p => p + 1);
+           lastScrollTime.current = now;
+        } else if (e.deltaY < 0 && pageIndex > 0) {
+           setDirection(-1);
+           setPageIndex(p => p - 1);
+           lastScrollTime.current = now;
+        }
       }
     };
 
     window.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseleave", handleMouseLeave);
     window.addEventListener("wheel", handleWheel, { passive: false });
-    window.addEventListener("touchstart", handleTouchStart, { passive: false });
-    window.addEventListener("touchmove", handleTouchMove, { passive: false });
-    window.addEventListener("keydown", handleKeyDown);
     
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseleave", handleMouseLeave);
       window.removeEventListener("wheel", handleWheel);
-      window.removeEventListener("touchstart", handleTouchStart);
-      window.removeEventListener("touchmove", handleTouchMove);
-      window.removeEventListener("keydown", handleKeyDown);
-      if (wheelTimeout.current) clearTimeout(wheelTimeout.current);
     };
   }, [pageIndex]);
 
@@ -312,76 +265,10 @@ export default function App() {
               initial="initial"
               animate="animate"
               exit="exit"
-              className="absolute inset-0 pt-24 pb-12 flex flex-col items-center justify-center px-4 md:px-10 z-20"
+              className="absolute inset-0 flex flex-col items-center justify-center z-20 pointer-events-none"
               style={{ transformStyle: "preserve-3d" }}
             >
-              <motion.div
-                className="w-full h-full max-h-[75vh] rounded-[2rem] md:rounded-[3rem] border border-white/10 backdrop-blur-md overflow-hidden relative shadow-[0_30px_80px_rgba(0,0,0,0.8)] cursor-crosshair group flex items-center justify-center"
-                animate={{
-                  rotateX: mousePosition.y * 1.5,
-                  rotateY: mousePosition.x * -1.5,
-                }}
-                transition={{ type: "spring", stiffness: 40, damping: 25 }}
-                style={{ transformStyle: "preserve-3d" }}
-              >
-                {/* Internal interactive glow that follows cursor relative to the center */}
-                {cursorPos.x !== -1000 && (
-                  <motion.div
-                    className="absolute w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-amber-500/20 blur-[100px] pointer-events-none mix-blend-screen"
-                    animate={{
-                      x: cursorPos.x - (typeof window !== 'undefined' ? window.innerWidth / 2 : 0),
-                      y: cursorPos.y - (typeof window !== 'undefined' ? window.innerHeight / 2 : 0),
-                    }}
-                    transition={{ type: "spring", stiffness: 30, damping: 20 }}
-                    style={{ transform: "translateZ(-50px)" }}
-                  />
-                )}
-
-                {/* Central Liquid Glass Sculpture */}
-                <motion.div
-                  className="relative w-[60vw] h-[60vw] max-w-[450px] max-h-[450px] border border-white/20 backdrop-blur-xl flex items-center justify-center bg-gradient-to-br from-white/10 to-transparent shadow-[inset_0_0_100px_rgba(255,255,255,0.05)]"
-                  style={{ transform: "translateZ(80px)" }}
-                  animate={{
-                    borderRadius: ["40% 60% 60% 40% / 50% 40% 60% 50%", "60% 40% 50% 50% / 40% 60% 40% 60%", "40% 60% 60% 40% / 50% 40% 60% 50%"]
-                  }}
-                  transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-                >
-                   <motion.div
-                     className="w-[65%] h-[65%] border border-amber-500/30 backdrop-blur-md bg-gradient-to-tr from-amber-500/10 to-transparent flex items-center justify-center shadow-[inset_0_0_50px_rgba(255,183,3,0.1)]"
-                     style={{ transform: "translateZ(40px)" }}
-                     animate={{
-                       borderRadius: ["50% 50% 40% 60% / 60% 40% 50% 50%", "40% 60% 60% 40% / 50% 60% 40% 50%", "50% 50% 40% 60% / 60% 40% 50% 50%"],
-                       rotate: [0, 90, 0]
-                     }}
-                     transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-                   >
-                      <motion.div
-                        className="w-[40%] h-[40%] border border-white/30 backdrop-blur-sm bg-white/10 shadow-[0_0_30px_rgba(255,255,255,0.2)]"
-                        style={{ transform: "translateZ(40px)" }}
-                        animate={{
-                           borderRadius: ["60% 40% 50% 50% / 40% 60% 40% 60%", "40% 60% 60% 40% / 50% 40% 60% 50%", "60% 40% 50% 50% / 40% 60% 40% 60%"],
-                           rotate: [0, -180, 0]
-                        }}
-                        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-                      />
-                   </motion.div>
-                </motion.div>
-
-                {/* Framing details for architectural feel */}
-                <div className="absolute top-6 left-6 md:top-12 md:left-12 flex flex-col gap-2" style={{ transform: "translateZ(30px)" }}>
-                  <div className="text-[10px] tracking-[0.4em] text-white/50 uppercase font-display border-b border-white/10 pb-2">
-                    Interactive Void
-                  </div>
-                  <div className="text-[10px] tracking-widest text-amber-500/80 uppercase font-mono">
-                    System Active
-                  </div>
-                </div>
-
-                <div className="absolute bottom-6 right-6 md:bottom-12 md:right-12 text-[10px] tracking-[0.4em] text-white/50 uppercase font-display border-l border-white/10 pl-4" style={{ transform: "translateZ(30px)" }}>
-                  Liquid Glass Engine <br />
-                  <span className="text-amber-500/50 mt-1 block">V 1.0</span>
-                </div>
-              </motion.div>
+              {/* Home is now intentionally left empty to showcase the design in the background image */}
             </motion.section>
           )}
 
