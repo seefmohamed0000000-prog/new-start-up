@@ -1,4 +1,4 @@
-import { Power } from "lucide-react";
+import { Power, Facebook, Linkedin, Twitter, MessageCircle } from "lucide-react";
 import { motion, useSpring, AnimatePresence } from "motion/react";
 import { useEffect, useState, useRef } from "react";
 
@@ -22,8 +22,8 @@ const InteractiveBackground = ({ cursorPos, activePage }: { cursorPos: { x: numb
         <motion.div
            className="absolute inset-0 w-full h-full"
            animate={{
-             filter: activePage === 'home' ? 'blur(0px) brightness(1)' : 'blur(30px) brightness(0.4) saturate(0.5)',
-             scale: activePage === 'home' ? 1.0 : 1.15,
+             filter: activePage === 'home' ? 'blur(0px) brightness(1)' : 'blur(2px) brightness(0.6) saturate(0.8)',
+             scale: activePage === 'home' ? 1.0 : 1.05,
            }}
            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
         >
@@ -39,8 +39,8 @@ const InteractiveBackground = ({ cursorPos, activePage }: { cursorPos: { x: numb
         
         {/* Overall dark overlay to prevent background from overpowering content */}
         <motion.div 
-          className="absolute inset-0 bg-black/60 mix-blend-multiply"
-          animate={{ opacity: activePage === 'home' ? 0 : 1 }}
+          className="absolute inset-0"
+          animate={{ backgroundColor: activePage === 'home' ? 'rgba(0,0,0,0)' : 'rgba(0,0,0,0.6)' }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
         />
         
@@ -57,7 +57,7 @@ const InteractiveBackground = ({ cursorPos, activePage }: { cursorPos: { x: numb
                 scale: [1, 1.5, 1],
               }}
               transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[20vw] max-w-[800px] max-h-[300px] rounded-full bg-amber-500/10 blur-[100px] md:blur-[150px] mix-blend-screen pointer-events-none"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[20vw] max-w-[800px] max-h-[300px] rounded-full bg-teal-500/10 blur-[100px] md:blur-[150px] mix-blend-screen pointer-events-none"
             />
           </motion.div>
         )}
@@ -73,7 +73,7 @@ const InteractiveBackground = ({ cursorPos, activePage }: { cursorPos: { x: numb
                   opacity: [0.5, 0.8, 0.5]
                 }}
                 transition={{ duration: 8, delay: i * 2, repeat: Infinity, ease: "easeInOut" }}
-                className={`absolute top-[30%] ${i === 0 ? 'left-[20%]' : i === 1 ? 'left-[50%] -translate-x-1/2' : 'right-[20%]'} w-[20vw] h-[30vw] max-w-[300px] max-h-[400px] rounded-[100px] bg-amber-700/10 blur-[60px] md:blur-[90px] mix-blend-screen pointer-events-none`}
+                className={`absolute top-[30%] ${i === 0 ? 'left-[20%]' : i === 1 ? 'left-[50%] -translate-x-1/2' : 'right-[20%]'} w-[20vw] h-[30vw] max-w-[300px] max-h-[400px] rounded-[100px] bg-teal-700/10 blur-[60px] md:blur-[90px] mix-blend-screen pointer-events-none`}
               />
             ))}
           </motion.div>
@@ -88,7 +88,7 @@ const InteractiveBackground = ({ cursorPos, activePage }: { cursorPos: { x: numb
                 opacity: [0.3, 0.7, 0.3]
               }}
               transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute bottom-[-10%] left-1/2 -translate-x-1/2 w-[70vw] h-[50vw] max-w-[900px] max-h-[600px] rounded-[50%] bg-amber-600/10 blur-[120px] md:blur-[180px] mix-blend-screen pointer-events-none"
+              className="absolute bottom-[-10%] left-1/2 -translate-x-1/2 w-[70vw] h-[50vw] max-w-[900px] max-h-[600px] rounded-[50%] bg-teal-600/10 blur-[120px] md:blur-[180px] mix-blend-screen pointer-events-none"
             />
           </motion.div>
         )}
@@ -98,7 +98,7 @@ const InteractiveBackground = ({ cursorPos, activePage }: { cursorPos: { x: numb
       {cursorPos.x !== -1000 && (
         <motion.div 
           style={{ x: springX, y: springY }}
-          className="absolute top-0 left-0 w-[500px] h-[500px] rounded-full bg-amber-500/10 blur-[100px] pointer-events-none hidden md:block mix-blend-screen"
+          className="absolute top-0 left-0 w-[500px] h-[500px] rounded-full bg-teal-500/10 blur-[100px] pointer-events-none hidden md:block mix-blend-screen"
         />
       )}
     </div>
@@ -202,7 +202,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-transparent text-white overflow-hidden relative selection:bg-amber-500/30 font-sans flex flex-col">
+    <div className="min-h-screen bg-transparent text-white overflow-hidden relative selection:bg-teal-500/30 font-sans flex flex-col">
       {/* Background Interactive Element */}
       <InteractiveBackground cursorPos={cursorPos} activePage={activePage} />
 
@@ -216,27 +216,60 @@ export default function App() {
       <motion.div 
         animate={{ x: mousePosition.x * -1, y: mousePosition.y * -1 }}
         transition={{ type: "spring", stiffness: 50, damping: 30 }}
-        className="fixed top-0 left-0 w-full z-40"
+        className="fixed top-0 left-0 w-full z-40 pointer-events-none"
       >
-        <nav className="w-full px-6 py-5 md:px-10 md:py-6 flex items-center justify-between">
-          
-          {/* Name / Logo - Left */}
-          <motion.a 
+        <div className="w-full h-full relative pointer-events-none">
+          {/* Global Branding Name that smoothly morphs positioning */}
+          <motion.a
             href="#home"
             onClick={(e) => {
               e.preventDefault();
               handleNav('home');
             }}
-            animate={{ 
-              opacity: activePage === 'home' ? 0 : 1, 
-              y: activePage === 'home' ? -20 : 0 
+            initial={false}
+            animate={{
+              top: activePage === 'home' ? '48px' : '24px',
+              left: activePage === 'home' ? '50%' : '32px',
+              x: activePage === 'home' ? '-50%' : '0%',
+              y: 0,
+              opacity: 1
             }}
-            transition={{ duration: 0.8, delay: activePage === 'home' ? 0 : 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className={`text-lg md:text-2xl font-display tracking-[0.15em] cursor-pointer group flex items-center hover:scale-105 transition-transform ${activePage === 'home' ? 'pointer-events-none' : ''}`}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute pointer-events-auto cursor-pointer group flex items-center"
           >
-            <span className="font-semibold text-white group-hover:text-amber-500 transition-colors duration-500">Seif</span>
-            <span className="text-zinc-400 group-hover:text-white transition-colors duration-500 ml-1.5 md:ml-2">Mohamed</span>
+            {/* We overlay the two versions and crossfade them to avoid font-loading snaps */}
+            <motion.div
+              className="absolute inset-0 flex items-center justify-center whitespace-nowrap"
+              animate={{ opacity: activePage === 'home' ? 1 : 0, scale: activePage === 'home' ? 1 : 0.8 }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
+            >
+              <h1 className="text-[12px] sm:text-[14px] font-sans tracking-[0.6em] text-white/80 uppercase whitespace-nowrap">
+                Seif Mohamed
+              </h1>
+            </motion.div>
+
+            <motion.div
+              className="flex items-center whitespace-nowrap"
+              animate={{ opacity: activePage === 'home' ? 0 : 1, scale: activePage === 'home' ? 1.1 : 1 }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
+            >
+              <span className="text-xl md:text-2xl font-display tracking-[0.15em] font-semibold text-white group-hover:text-teal-500 transition-colors duration-500">Seif</span>
+              <span className="text-xl md:text-2xl font-display tracking-[0.15em] text-zinc-400 group-hover:text-white transition-colors duration-500 ml-1.5 md:ml-2">Mohamed</span>
+            </motion.div>
           </motion.a>
+        </div>
+      </motion.div>
+
+      {/* Header Container with subtle 3D tilt */}
+      <motion.div 
+        animate={{ x: mousePosition.x * -1, y: mousePosition.y * -1 }}
+        transition={{ type: "spring", stiffness: 50, damping: 30 }}
+        className="fixed top-0 left-0 w-full z-40"
+      >
+        <nav className="w-full px-8 py-6 flex items-center justify-between">
+          
+          {/* Navigation Container - Left placeholder */}
+          <div className="w-32 md:w-48"></div>
 
           {/* Liquid Glass Nav Pill - Center */}
           <motion.div 
@@ -252,11 +285,11 @@ export default function App() {
              <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent opacity-20 pointer-events-none"></div>
              <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none"></div>
              
-             <button onClick={() => handleNav('about')} className={`${activePage === 'about' ? 'text-amber-400' : 'text-zinc-300'} hover:text-amber-400 text-[10px] font-medium tracking-[0.2em] uppercase transition-colors relative z-10`}>About me</button>
+             <button onClick={() => handleNav('about')} className={`${activePage === 'about' ? 'text-teal-400' : 'text-zinc-300'} hover:text-teal-400 text-[10px] font-medium tracking-[0.2em] uppercase transition-colors relative z-10`}>About me</button>
              <span className="w-[1px] h-2.5 bg-white/20 relative z-10"></span>
-             <button onClick={() => handleNav('expertise')} className={`${activePage === 'expertise' ? 'text-amber-400' : 'text-zinc-300'} hover:text-amber-400 text-[10px] font-medium tracking-[0.2em] uppercase transition-colors relative z-10`}>Expertise</button>
+             <button onClick={() => handleNav('expertise')} className={`${activePage === 'expertise' ? 'text-teal-400' : 'text-zinc-300'} hover:text-teal-400 text-[10px] font-medium tracking-[0.2em] uppercase transition-colors relative z-10`}>Expertise</button>
              <span className="w-[1px] h-2.5 bg-white/20 relative z-10"></span>
-             <button onClick={() => handleNav('contact')} className={`${activePage === 'contact' ? 'text-amber-400' : 'text-zinc-300'} hover:text-amber-400 text-[10px] font-medium tracking-[0.2em] uppercase transition-colors relative z-10`}>Contact</button>
+             <button onClick={() => handleNav('contact')} className={`${activePage === 'contact' ? 'text-teal-400' : 'text-zinc-300'} hover:text-teal-400 text-[10px] font-medium tracking-[0.2em] uppercase transition-colors relative z-10`}>Contact</button>
           </motion.div>
 
           {/* Power Icon - Right */}
@@ -268,11 +301,45 @@ export default function App() {
              transition={{ duration: 0.8, delay: activePage === 'home' ? 0 : 0.5, ease: [0.16, 1, 0.3, 1] }}
              className={activePage === 'home' ? 'pointer-events-none' : ''}
           >
-            <button aria-label="Action" onClick={() => handleNav('home')} className={`h-9 w-9 flex items-center justify-center rounded-full border border-white/10 ${activePage === 'home' ? 'bg-amber-500/20' : 'bg-white/5'} hover:bg-white/10 hover:border-white/30 backdrop-blur-xl transition-all duration-300 group shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:shadow-[0_0_25px_rgba(255,183,3,0.2)]`}>
-              <Power className={`w-4 h-4 ${activePage === 'home' ? 'text-amber-400' : 'text-zinc-400'} group-hover:text-amber-400 transition-colors duration-300`} strokeWidth={1.5} />
+            <button aria-label="Action" onClick={() => handleNav('home')} className={`h-9 w-9 flex items-center justify-center rounded-full border border-white/10 ${activePage === 'home' ? 'bg-teal-500/20' : 'bg-white/5'} hover:bg-white/10 hover:border-white/30 backdrop-blur-xl transition-all duration-300 group shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:shadow-[0_0_25px_rgba(20,184,166,0.2)]`}>
+              <Power className={`w-4 h-4 ${activePage === 'home' ? 'text-teal-400' : 'text-zinc-400'} group-hover:text-teal-400 transition-colors duration-300`} strokeWidth={1.5} />
             </button>
           </motion.div>
         </nav>
+      </motion.div>
+
+      {/* Global Bottom Info for Home */}
+      <motion.div
+        className="fixed bottom-0 left-0 w-full z-40 pointer-events-none p-6 md:p-12 pb-12 md:pb-24 flex justify-between items-end gap-4"
+        animate={{ 
+          opacity: activePage === 'home' ? 1 : 0,
+          y: activePage === 'home' ? 0 : 40,
+          scale: activePage === 'home' ? 1 : 0.95
+        }}
+        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <div className="text-[8px] sm:text-[9px] uppercase tracking-[0.2em] md:tracking-[0.3em] font-sans text-white/60 max-w-[200px] text-left">
+          <span className="text-white/40 block mb-1">Role</span>
+          Mid Level<br />Graphic Designer
+        </div>
+        <div className="hidden md:flex items-center justify-center gap-6 backdrop-blur-md bg-black/20 px-6 py-3 rounded-full border border-white/10 shadow-2xl pointer-events-auto">
+          <a href="#" aria-label="Facebook" className="text-white/50 hover:text-teal-400 hover:scale-110 transition-all duration-300">
+            <Facebook className="w-4 h-4" strokeWidth={1.5} />
+          </a>
+          <a href="#" aria-label="LinkedIn" className="text-white/50 hover:text-teal-400 hover:scale-110 transition-all duration-300">
+            <Linkedin className="w-4 h-4" strokeWidth={1.5} />
+          </a>
+          <a href="#" aria-label="Twitter" className="text-white/50 hover:text-teal-400 hover:scale-110 transition-all duration-300">
+            <Twitter className="w-4 h-4" strokeWidth={1.5} />
+          </a>
+          <a href="#" aria-label="WhatsApp" className="text-white/50 hover:text-teal-400 hover:scale-110 transition-all duration-300">
+            <MessageCircle className="w-4 h-4" strokeWidth={1.5} />
+          </a>
+        </div>
+        <div className="text-[8px] sm:text-[9px] uppercase tracking-[0.2em] md:tracking-[0.3em] font-sans text-white/60 text-right max-w-[200px]">
+          <span className="text-white/40 block mb-1">Approach</span>
+          Design with Purpose.<br />Create with Passion.
+        </div>
       </motion.div>
       
       {/* Content wrapper with fixed height to prevent scrolling, using animate presence for paginated feel */}
@@ -288,10 +355,10 @@ export default function App() {
               initial="initial"
               animate="animate"
               exit="exit"
-              className="absolute inset-0 flex flex-col items-center justify-center z-20 pointer-events-none"
+              className="absolute inset-0 flex flex-col justify-between z-20 pointer-events-none p-6 md:p-12 pb-24"
               style={{ transformStyle: "preserve-3d" }}
             >
-              {/* Home is now intentionally left empty to showcase the design in the background image */}
+              {/* Home has no content block now, relying on the global elements */}
             </motion.section>
           )}
 
@@ -308,18 +375,21 @@ export default function App() {
             >
                <div className="max-w-3xl mx-auto backdrop-blur-md bg-white/5 border border-white/10 p-8 md:p-16 rounded-3xl relative overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.5)] cursor-default group">
                  {/* Internal subtle glow */}
-                 <div className="absolute inset-0 bg-gradient-to-br from-amber-500/0 via-transparent to-amber-500/0 group-hover:from-amber-500/10 transition-colors duration-1000"></div>
+                 <div className="absolute inset-0 bg-gradient-to-br from-teal-500/0 via-transparent to-teal-500/0 group-hover:from-teal-500/10 transition-colors duration-1000"></div>
                  
-                 <h2 className="text-xs md:text-sm font-medium tracking-[0.3em] uppercase text-amber-500 mb-6 flex items-center gap-4 relative z-10">
-                   <span className="w-12 h-[1px] bg-amber-500/50"></span>
+                 <h2 className="text-xs md:text-sm font-medium tracking-[0.3em] uppercase text-teal-500 mb-6 flex items-center gap-4 relative z-10">
+                   <span className="w-12 h-[1px] bg-teal-500/50"></span>
                    About me
                  </h2>
-                 <p className="text-xl md:text-3xl font-light leading-relaxed text-zinc-300 mb-8 font-display relative z-10">
-                   I blend <span className="text-white font-medium italic">liquid glass aesthetics</span> with gritty, cinematic storytelling to create visuals that don't just look good, but feel <span className="text-amber-400">alive</span>.
+                 <p className="text-lg md:text-2xl font-light leading-[1.8] text-zinc-200 mb-6 font-sans relative z-10">
+                   I am a <span className="text-teal-400 font-medium">Mid-Level Graphic Designer</span> driven by an endless passion for design and creativity.
+                 </p>
+                 <p className="text-base md:text-lg font-light leading-[1.8] text-zinc-400 mb-8 font-sans relative z-10">
+                   I blend structural aesthetics with cinematic storytelling to create visuals that don't just look good, but feel <span className="text-teal-400 italic">alive</span>. Every project is an opportunity to craft experiences with purpose and endless dedication. Let's build something extraordinary together.
                  </p>
                  <div className="flex flex-wrap gap-4 relative z-10 mt-12">
                    {['Art Direction', 'Motion Graphics', 'UI/UX Design', '3D Generalist'].map((skill) => (
-                     <span key={skill} className="px-4 py-2 rounded-full border border-white/10 text-[10px] md:text-xs tracking-widest uppercase text-zinc-400 bg-black/20 hover:text-white hover:border-amber-500/50 transition-colors">
+                     <span key={skill} className="px-4 py-2 rounded-full border border-white/10 text-[10px] md:text-xs tracking-widest uppercase text-zinc-400 bg-black/20 hover:text-white hover:border-teal-500/50 transition-colors">
                        {skill}
                      </span>
                    ))}
@@ -340,10 +410,10 @@ export default function App() {
               className="absolute inset-0 pt-24 pb-12 flex flex-col justify-center px-6 z-20"
             >
               <div className="max-w-6xl mx-auto w-full">
-                 <h2 className="text-xs md:text-sm font-medium tracking-[0.3em] uppercase text-amber-500 mb-12 md:mb-16 flex items-center gap-4 justify-center">
-                   <span className="w-12 h-[1px] bg-amber-500/50"></span>
+                 <h2 className="text-xs md:text-sm font-medium tracking-[0.3em] uppercase text-teal-500 mb-12 md:mb-16 flex items-center gap-4 justify-center">
+                   <span className="w-12 h-[1px] bg-teal-500/50"></span>
                    Expertise
-                   <span className="w-12 h-[1px] bg-amber-500/50"></span>
+                   <span className="w-12 h-[1px] bg-teal-500/50"></span>
                  </h2>
 
                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
@@ -357,13 +427,13 @@ export default function App() {
                        initial={{ opacity: 0, y: 20 }}
                        animate={{ opacity: 1, y: 0 }}
                        transition={{ duration: 0.5, delay: i * 0.15 }}
-                       className="p-8 md:p-10 rounded-3xl bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-amber-500/30 transition-all duration-500 group shadow-[0_8px_32px_rgba(0,0,0,0.1)] relative overflow-hidden"
+                       className="p-8 md:p-10 rounded-3xl bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-teal-500/30 transition-all duration-500 group shadow-[0_8px_32px_rgba(0,0,0,0.1)] relative overflow-hidden"
                      >
-                       <div className="absolute inset-0 bg-gradient-to-br from-amber-500/0 to-amber-500/0 group-hover:from-amber-500/10 group-hover:to-transparent transition-all duration-700 pointer-events-none"></div>
-                       <div className="h-12 w-12 rounded-full border border-white/20 flex items-center justify-center mb-8 group-hover:border-amber-500/50 group-hover:scale-110 transition-all duration-500 bg-black/20">
-                         <span className="text-amber-500 font-display text-lg">0{i+1}</span>
+                       <div className="absolute inset-0 bg-gradient-to-br from-teal-500/0 to-teal-500/0 group-hover:from-teal-500/10 group-hover:to-transparent transition-all duration-700 pointer-events-none"></div>
+                       <div className="h-12 w-12 rounded-full border border-white/20 flex items-center justify-center mb-8 group-hover:border-teal-500/50 group-hover:scale-110 transition-all duration-500 bg-black/20">
+                         <span className="text-teal-500 font-display text-lg">0{i+1}</span>
                        </div>
-                       <h3 className="text-lg md:text-xl font-display tracking-widest mb-4 group-hover:text-amber-400 transition-colors uppercase">{item.title}</h3>
+                       <h3 className="text-lg md:text-xl font-display tracking-widest mb-4 group-hover:text-teal-400 transition-colors uppercase">{item.title}</h3>
                        <p className="text-zinc-400 font-light leading-relaxed text-xs md:text-sm">
                          {item.desc}
                        </p>
@@ -385,21 +455,25 @@ export default function App() {
               exit="exit"
               className="absolute inset-0 pt-24 pb-12 flex flex-col items-center justify-center px-6 z-20"
             >
-              <div className="text-center w-full max-w-2xl mx-auto">
-                <h2 className="text-4xl md:text-6xl lg:text-7xl font-display font-light mb-8 mix-blend-plus-lighter">
-                  Let's create <br/>
-                  <span className="font-bold italic text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-amber-600">magic.</span>
+              <div className="text-center w-full max-w-2xl mx-auto flex flex-col items-center">
+                <h2 className="flex flex-col items-center justify-center gap-6 mix-blend-plus-lighter mb-12">
+                  <span className="text-lg md:text-2xl font-sans tracking-[0.4em] md:tracking-[0.6em] font-light uppercase text-zinc-200">
+                    Let the
+                  </span>
+                  <span className="font-magic text-6xl md:text-8xl lg:text-9xl tracking-normal text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-teal-600 drop-shadow-md pb-4">
+                    magic begin.
+                  </span>
                 </h2>
-                <button className="mt-8 px-10 py-4 rounded-full bg-white text-black text-xs md:text-sm font-medium tracking-[0.2em] uppercase hover:bg-amber-400 hover:text-black hover:scale-105 transition-all duration-300 shadow-[0_0_40px_rgba(255,255,255,0.2)] hover:shadow-[0_0_50px_rgba(255,183,3,0.4)]">
+                <button className="px-10 py-4 rounded-full bg-white text-black text-xs md:text-sm font-medium tracking-[0.2em] uppercase hover:bg-teal-400 hover:text-black hover:scale-105 transition-all duration-300 shadow-[0_0_40px_rgba(255,255,255,0.2)] hover:shadow-[0_0_50px_rgba(20,184,166,0.4)]">
                   Get in touch
                 </button>
                 
                 <div className="mt-24 pt-10 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] tracking-widest uppercase text-zinc-500 w-full">
                   <span>© 2026 Seif Mohamed</span>
                   <div className="flex gap-6">
-                    <a href="#" className="hover:text-amber-400 transition-colors">Instagram</a>
-                    <a href="#" className="hover:text-amber-400 transition-colors">Behance</a>
-                    <a href="#" className="hover:text-amber-400 transition-colors">LinkedIn</a>
+                    <a href="#" className="hover:text-teal-400 transition-colors">Instagram</a>
+                    <a href="#" className="hover:text-teal-400 transition-colors">Behance</a>
+                    <a href="#" className="hover:text-teal-400 transition-colors">LinkedIn</a>
                   </div>
                 </div>
               </div>
