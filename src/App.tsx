@@ -168,32 +168,29 @@ export default function App() {
 
   const pageVariants = {
     initial: (direction: number) => ({
-      x: direction > 0 ? "20vw" : "-20vw",
+      y: direction > 0 ? "20%" : "-20%",
       opacity: 0,
-      scale: 0.8,
-      rotateY: direction > 0 ? -15 : 15,
-      filter: "blur(20px)",
-      z: -500
+      scale: 0.95,
+      clipPath: direction > 0 ? "inset(100% 0% 0% 0% round 30px)" : "inset(0% 0% 100% 0% round 30px)",
+      filter: "blur(10px)"
     }),
     animate: {
-      x: 0,
+      y: 0,
       opacity: 1,
       scale: 1,
-      rotateY: 0,
+      clipPath: "inset(0% 0% 0% 0% round 0px)",
       filter: "blur(0px)",
-      z: 0,
       transition: {
-        duration: 0.8,
+        duration: 1.2,
         ease: [0.16, 1, 0.3, 1]
       }
     },
     exit: (direction: number) => ({
-      x: direction > 0 ? "-20vw" : "20vw",
+      y: direction > 0 ? "-20%" : "20%",
       opacity: 0,
-      scale: 0.8,
-      rotateY: direction > 0 ? 15 : -15,
-      filter: "blur(20px)",
-      z: -500,
+      scale: 0.95,
+      clipPath: direction > 0 ? "inset(0% 0% 100% 0% round 30px)" : "inset(100% 0% 0% 0% round 30px)",
+      filter: "blur(10px)",
       transition: {
         duration: 0.8,
         ease: [0.16, 1, 0.3, 1]
@@ -371,28 +368,47 @@ export default function App() {
               initial="initial"
               animate="animate"
               exit="exit"
-              className="absolute inset-0 pt-24 pb-12 flex flex-col items-center justify-center px-6 z-20"
+              className="absolute inset-0 pt-32 pb-12 flex flex-col justify-center items-center px-6 md:px-24 z-20"
             >
-               <div className="max-w-3xl mx-auto backdrop-blur-md bg-white/5 border border-white/10 p-8 md:p-16 rounded-3xl relative overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.5)] cursor-default group">
-                 {/* Internal subtle glow */}
-                 <div className="absolute inset-0 bg-gradient-to-br from-teal-500/0 via-transparent to-teal-500/0 group-hover:from-teal-500/10 transition-colors duration-1000"></div>
-                 
-                 <h2 className="text-xs md:text-sm font-medium tracking-[0.3em] uppercase text-teal-500 mb-6 flex items-center gap-4 relative z-10">
-                   <span className="w-12 h-[1px] bg-teal-500/50"></span>
-                   About me
-                 </h2>
-                 <p className="text-lg md:text-2xl font-light leading-[1.8] text-zinc-200 mb-6 font-sans relative z-10">
-                   I am a <span className="text-teal-400 font-medium">Mid-Level Graphic Designer</span> driven by an endless passion for design and creativity.
-                 </p>
-                 <p className="text-base md:text-lg font-light leading-[1.8] text-zinc-400 mb-8 font-sans relative z-10">
-                   I blend structural aesthetics with cinematic storytelling to create visuals that don't just look good, but feel <span className="text-teal-400 italic">alive</span>. Every project is an opportunity to craft experiences with purpose and endless dedication. Let's build something extraordinary together.
-                 </p>
-                 <div className="flex flex-wrap gap-4 relative z-10 mt-12">
-                   {['Art Direction', 'Motion Graphics', 'UI/UX Design', '3D Generalist'].map((skill) => (
-                     <span key={skill} className="px-4 py-2 rounded-full border border-white/10 text-[10px] md:text-xs tracking-widest uppercase text-zinc-400 bg-black/20 hover:text-white hover:border-teal-500/50 transition-colors">
-                       {skill}
-                     </span>
-                   ))}
+               <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-center">
+                 {/* Left side: Heading */}
+                 <div className="lg:col-span-4 flex flex-col items-start">
+                   <h2 className="text-sm md:text-base font-medium tracking-[0.4em] uppercase text-teal-500 mb-8 flex items-center gap-4">
+                     <span className="w-8 h-[1px] bg-teal-500"></span>
+                     About me
+                     <span className="w-24 h-[1px] bg-teal-500/30"></span>
+                   </h2>
+                   <div className="font-display text-4xl md:text-5xl lg:text-7xl font-light text-white leading-tight">
+                     Driven by <br/>
+                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-teal-500 font-medium">passion.</span>
+                   </div>
+                 </div>
+
+                 {/* Right side: Content */}
+                 <div className="lg:col-span-8 relative">
+                   <div className="absolute -left-12 -top-12 text-[150px] font-magic text-teal-500/10 pointer-events-none select-none">
+                     S
+                   </div>
+                   
+                   <div className="relative z-10 space-y-8 backdrop-blur-sm bg-black/10 p-8 md:p-12 rounded-3xl border border-white/5 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)]">
+                     <p className="text-xl md:text-3xl font-light leading-relaxed text-zinc-200 font-sans">
+                       I am a <span className="text-white font-medium">Mid-Level Graphic Designer</span> with an uncompromising approach to visual storytelling.
+                     </p>
+                     
+                     <div className="h-[1px] w-full bg-gradient-to-r from-white/20 to-transparent my-8"></div>
+                     
+                     <p className="text-base md:text-lg font-light leading-relaxed text-zinc-400 font-sans max-w-2xl">
+                       I blend structural aesthetics with cinematic narratives to create visuals that don't just look good, but feel <span className="text-teal-400 italic">alive</span>. Every project is an opportunity to craft experiences with purpose, emotional resonance, and endless dedication. Let's build something extraordinary.
+                     </p>
+                     
+                     <div className="flex flex-wrap gap-3 pt-6">
+                       {['Art Direction', 'Motion Graphics', 'UI/UX Design', '3D Generalist'].map((skill) => (
+                         <span key={skill} className="px-5 py-2.5 rounded-full border border-white/10 text-[10px] md:text-xs tracking-[0.2em] uppercase text-zinc-300 hover:text-white hover:bg-teal-500/20 hover:border-teal-500/50 transition-all duration-300 cursor-default">
+                           {skill}
+                         </span>
+                       ))}
+                     </div>
+                   </div>
                  </div>
                </div>
             </motion.section>
@@ -407,16 +423,26 @@ export default function App() {
               initial="initial"
               animate="animate"
               exit="exit"
-              className="absolute inset-0 pt-24 pb-12 flex flex-col justify-center px-6 z-20"
+              className="absolute inset-0 pt-32 pb-12 flex flex-col justify-center px-6 md:px-24 z-20"
             >
-              <div className="max-w-6xl mx-auto w-full">
-                 <h2 className="text-xs md:text-sm font-medium tracking-[0.3em] uppercase text-teal-500 mb-12 md:mb-16 flex items-center gap-4 justify-center">
-                   <span className="w-12 h-[1px] bg-teal-500/50"></span>
-                   Expertise
-                   <span className="w-12 h-[1px] bg-teal-500/50"></span>
-                 </h2>
+              <div className="max-w-7xl mx-auto w-full flex flex-col md:flex-row gap-16 lg:gap-32">
+                 <div className="md:w-1/3 flex flex-col justify-between">
+                   <div>
+                     <h2 className="text-sm md:text-base font-medium tracking-[0.4em] uppercase text-teal-500 mb-6 flex items-center gap-4">
+                       <span className="w-8 h-[1px] bg-teal-500"></span>
+                       Expertise
+                     </h2>
+                     <h3 className="font-display text-3xl md:text-5xl font-light text-white leading-tight mb-8">
+                       Crafting <br className="hidden md:block"/>
+                       <span className="font-magic text-5xl md:text-7xl text-teal-400 capitalize block mt-2">experiences</span>
+                     </h3>
+                   </div>
+                   <p className="text-sm text-zinc-400 leading-relaxed font-light mt-auto max-w-sm hidden md:block">
+                     A multidisciplinary approach allows me to tackle projects from all angles, ensuring a cohesive and striking final product.
+                   </p>
+                 </div>
 
-                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                 <div className="md:w-2/3 flex flex-col gap-8">
                    {[
                      { title: 'Art Direction', desc: 'Guiding the visual narrative to create cohesive and striking brand worlds.' },
                      { title: 'Motion Graphics', desc: 'Breathing life into static designs with fluid, cinematic animations.' },
@@ -424,20 +450,23 @@ export default function App() {
                    ].map((item, i) => (
                      <motion.div 
                        key={item.title}
-                       initial={{ opacity: 0, y: 20 }}
-                       animate={{ opacity: 1, y: 0 }}
-                       transition={{ duration: 0.5, delay: i * 0.15 }}
-                       className="p-8 md:p-10 rounded-3xl bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-teal-500/30 transition-all duration-500 group shadow-[0_8px_32px_rgba(0,0,0,0.1)] relative overflow-hidden"
+                       initial={{ opacity: 0, x: 20 }}
+                       animate={{ opacity: 1, x: 0 }}
+                       transition={{ duration: 0.8, delay: i * 0.2, ease: [0.16, 1, 0.3, 1] }}
+                       className="group flex flex-col sm:flex-row gap-6 sm:gap-12 items-start py-8 border-b border-white/10 hover:border-teal-500/50 transition-colors duration-500"
                      >
-                       <div className="absolute inset-0 bg-gradient-to-br from-teal-500/0 to-teal-500/0 group-hover:from-teal-500/10 group-hover:to-transparent transition-all duration-700 pointer-events-none"></div>
-                       <div className="h-12 w-12 rounded-full border border-white/20 flex items-center justify-center mb-8 group-hover:border-teal-500/50 group-hover:scale-110 transition-all duration-500 bg-black/20">
-                         <span className="text-teal-500 font-display text-lg">0{i+1}</span>
+                       <div className="text-2xl font-light font-sans text-teal-500/50 w-12 group-hover:text-teal-400 transition-colors duration-500">
+                         0{i+1}
                        </div>
-                       <h3 className="text-lg md:text-xl font-display tracking-widest mb-4 group-hover:text-teal-400 transition-colors uppercase">{item.title}</h3>
-                       <p className="text-zinc-400 font-light leading-relaxed text-xs md:text-sm">
-                         {item.desc}
-                       </p>
-                     </motion.div>
+                       <div className="flex-1">
+                         <h4 className="text-xl md:text-3xl font-display font-light mb-3 text-zinc-200 group-hover:text-white transition-colors duration-500 tracking-wider">
+                           {item.title}
+                         </h4>
+                         <p className="text-sm md:text-base text-zinc-500 font-light leading-relaxed max-w-lg group-hover:text-zinc-400 transition-colors duration-500">
+                           {item.desc}
+                         </p>
+                       </div>
+                   </motion.div>
                    ))}
                  </div>
               </div>
@@ -453,28 +482,43 @@ export default function App() {
               initial="initial"
               animate="animate"
               exit="exit"
-              className="absolute inset-0 pt-24 pb-12 flex flex-col items-center justify-center px-6 z-20"
+              className="absolute inset-0 pt-32 pb-12 flex flex-col items-center justify-between px-6 md:px-24 z-20"
             >
-              <div className="text-center w-full max-w-2xl mx-auto flex flex-col items-center">
-                <h2 className="flex flex-col items-center justify-center gap-6 mix-blend-plus-lighter mb-12">
-                  <span className="text-lg md:text-2xl font-sans tracking-[0.4em] md:tracking-[0.6em] font-light uppercase text-zinc-200">
-                    Let the
-                  </span>
-                  <span className="font-magic text-6xl md:text-8xl lg:text-9xl tracking-normal text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-teal-600 drop-shadow-md pb-4">
-                    magic begin.
-                  </span>
-                </h2>
-                <button className="px-10 py-4 rounded-full bg-white text-black text-xs md:text-sm font-medium tracking-[0.2em] uppercase hover:bg-teal-400 hover:text-black hover:scale-105 transition-all duration-300 shadow-[0_0_40px_rgba(255,255,255,0.2)] hover:shadow-[0_0_50px_rgba(20,184,166,0.4)]">
-                  Get in touch
-                </button>
+              <div className="w-full flex-grow flex flex-col items-center justify-center">
+                <div className="text-center w-full max-w-4xl mx-auto flex flex-col items-center relative">
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30vw] h-[30vw] min-w-[300px] border border-teal-500/10 rounded-full animate-[spin_40s_linear_infinite] pointer-events-none"></div>
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40vw] h-[40vw] min-w-[400px] border border-white/5 rounded-full animate-[spin_60s_linear_infinite_reverse] pointer-events-none"></div>
+
+                  <h2 className="flex flex-col items-center justify-center gap-2 mix-blend-plus-lighter mb-12 relative z-10">
+                    <span className="text-sm md:text-lg font-sans tracking-[0.8em] font-light uppercase text-zinc-400 mb-8 blur-[0.5px]">
+                      Let the
+                    </span>
+                    <span className="font-magic text-[80px] sm:text-[120px] md:text-[160px] leading-[0.8] tracking-normal text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-teal-500 drop-shadow-2xl">
+                      magic begin
+                    </span>
+                    <span className="text-teal-500 text-2xl md:text-3xl font-light mt-4">.</span>
+                  </h2>
+
+                  <button className="group px-12 py-5 rounded-full bg-transparent border border-teal-500/50 text-white text-xs md:text-sm font-medium tracking-[0.3em] uppercase hover:bg-teal-500 hover:text-black hover:border-teal-500 hover:scale-105 transition-all duration-500 relative z-10 overflow-hidden shadow-[0_0_40px_rgba(20,184,166,0.1)] hover:shadow-[0_0_60px_rgba(20,184,166,0.5)]">
+                    <span className="relative z-10">Get in touch</span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-teal-400 to-teal-600 translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500 ease-out z-0"></div>
+                  </button>
+                </div>
+              </div>
+              
+              <div className="w-full flex flex-col sm:flex-row justify-between items-end gap-6 text-[10px] sm:text-xs tracking-widest uppercase text-zinc-500 mt-auto pb-4">
+                <div className="flex flex-col gap-2 relative z-10 text-left">
+                  <span className="text-white/40">Available for</span>
+                  <span className="text-zinc-300">Freelance opportunities</span>
+                </div>
                 
-                <div className="mt-24 pt-10 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] tracking-widest uppercase text-zinc-500 w-full">
-                  <span>© 2026 Seif Mohamed</span>
-                  <div className="flex gap-6">
-                    <a href="#" className="hover:text-teal-400 transition-colors">Instagram</a>
-                    <a href="#" className="hover:text-teal-400 transition-colors">Behance</a>
-                    <a href="#" className="hover:text-teal-400 transition-colors">LinkedIn</a>
-                  </div>
+                <div className="flex gap-8 relative z-10">
+                  {['Instagram', 'Behance', 'LinkedIn'].map((platform) => (
+                    <a key={platform} href="#" className="hover:text-teal-400 transition-colors duration-300 relative group flex items-center">
+                      {platform}
+                      <span className="absolute -bottom-2 left-0 w-0 h-[1px] bg-teal-400 transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                  ))}
                 </div>
               </div>
             </motion.section>
