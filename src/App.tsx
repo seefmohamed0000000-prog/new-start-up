@@ -171,19 +171,19 @@ const content = {
       work: "Work",
       contact: "Contact"
     },
-    role: { title: "Role", descPart1: "Mid Level", descPart2: "Graphic Designer" },
+    role: { title: "Role", descPart1: "Graphic", descPart2: "Designer" },
     approach: { title: "Approach", descPart1: "Design with Purpose.", descPart2: "Create with Passion." },
     about: {
       title: "About me",
-      headingLine1: "Driven by",
-      headingLine2: "passion.",
+      headingLine1: "Crafting visual",
+      headingLine2: "stories.",
       desc1: "I am a",
-      desc1Strong: "Mid-Level Graphic Designer",
+      desc1Strong: "Graphic Designer",
       desc1End: "with an uncompromising approach to visual storytelling.",
-      desc2Part1: "I blend structural aesthetics with cinematic narratives to create visuals that don't just look good, but feel ",
-      desc2Alive: "alive",
-      desc2Part2: ". Every project is an opportunity to craft experiences with purpose, emotional resonance, and endless dedication. Let's build something extraordinary.",
-      skills: ['Art Direction', 'Motion Graphics', 'UI/UX Design', '3D Generalist']
+      desc2Part1: "I specialize in crafting compelling visual narratives through comprehensive ",
+      desc2Alive: "Branding",
+      desc2Part2: " and engaging Social Media Campaigns. From designing intuitive UI/UX experiences to creating standout Packaging and Visual Identities, every project is an opportunity to build something extraordinary.",
+      skills: ['Visual Identity', 'Social Media Campaigns', 'Branding', 'UI/UX Design', 'Packaging']
     },
     expertise: {
       title: "Expertise",
@@ -242,19 +242,19 @@ const content = {
       work: "المشاريع",
       contact: "تواصل معي"
     },
-    role: { title: "الدور", descPart1: "مصمم جرافيك", descPart2: "(مستوى متوسط)" },
+    role: { title: "الدور", descPart1: "مصمم", descPart2: "جرافيك" },
     approach: { title: "المنهجية", descPart1: "تصميم بهدف.", descPart2: "إبداع بشغف." },
     about: {
       title: "من أنا",
-      headingLine1: "الدافع هو",
-      headingLine2: "الشغف.",
+      headingLine1: "سرد قصص",
+      headingLine2: "بصرية.",
       desc1: "أنا",
-      desc1Strong: "مصمم جرافيك مستوى متوسط",
+      desc1Strong: "مصمم جرافيك",
       desc1End: "ولدي نهج لا يقبل المساومة في السرد البصري.",
-      desc2Part1: "أدمج الجماليات الهيكلية مع السرد السينمائي لابتكار تصاميم لا تبدو رائعة وحسب، بل تنبض ",
-      desc2Alive: "بالحياة",
-      desc2Part2: ". يمثل كل مشروع فرصة لصناعة تجارب ذات هدف ورنين عاطفي وتفانٍ لا حدود له. لنبني شيئًا استثنائيًا.",
-      skills: ['الإدارة الفنية', 'الموشن جرافيك', 'واجهة وتجربة المستخدم', 'تصميم ثلاثي الأبعاد']
+      desc2Part1: "أتخصص في صناعة قصص بصرية مؤثرة من خلال تصميم الهويات البصرية و",
+      desc2Alive: "العلامات التجارية",
+      desc2Part2: "، بالإضافة إلى حملات السوشيال ميديا التفاعلية. بدءًا من تصميم واجهة وتجربة المستخدم (UI/UX) وصولاً إلى تصميم الباكدجينج وتغليف المنتجات، يمثل كل مشروع فرصة لنبني شيئًا استثنائيًا.",
+      skills: ['الهوية البصرية', 'حملات السوشيال ميديا', 'تصميم العلامات التجارية', 'واجهة وتجربة المستخدم', 'تغليف المنتجات']
     },
     expertise: {
       title: "الخبرات",
