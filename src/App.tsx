@@ -1,4 +1,4 @@
-import { Power, Facebook, Linkedin, Twitter, MessageCircle } from "lucide-react";
+import { Globe, Facebook, Linkedin, Twitter, MessageCircle } from "lucide-react";
 import { motion, useSpring, AnimatePresence } from "motion/react";
 import { useEffect, useState, useRef } from "react";
 
@@ -105,12 +105,148 @@ const InteractiveBackground = ({ cursorPos, activePage }: { cursorPos: { x: numb
   );
 };
 
-const PAGES = ['home', 'about', 'expertise', 'contact'];
+const PAGES = ['home', 'about', 'expertise', 'work', 'contact'];
+
+const content = {
+  en: {
+    nav: {
+      about: "About me",
+      expertise: "Expertise",
+      work: "Work",
+      contact: "Contact"
+    },
+    role: { title: "Role", descPart1: "Mid Level", descPart2: "Graphic Designer" },
+    approach: { title: "Approach", descPart1: "Design with Purpose.", descPart2: "Create with Passion." },
+    about: {
+      title: "About me",
+      headingLine1: "Driven by",
+      headingLine2: "passion.",
+      desc1: "I am a",
+      desc1Strong: "Mid-Level Graphic Designer",
+      desc1End: "with an uncompromising approach to visual storytelling.",
+      desc2Part1: "I blend structural aesthetics with cinematic narratives to create visuals that don't just look good, but feel ",
+      desc2Alive: "alive",
+      desc2Part2: ". Every project is an opportunity to craft experiences with purpose, emotional resonance, and endless dedication. Let's build something extraordinary.",
+      skills: ['Art Direction', 'Motion Graphics', 'UI/UX Design', '3D Generalist']
+    },
+    expertise: {
+      title: "Expertise",
+      heading1: "Crafting",
+      heading2: "experiences",
+      desc: "A multidisciplinary approach allows me to tackle projects from all angles, ensuring a cohesive and striking final product.",
+      items: [
+         { title: 'Art Direction', desc: 'Guiding the visual narrative to create cohesive and striking brand worlds.' },
+         { title: 'Motion Graphics', desc: 'Breathing life into static designs with fluid, cinematic animations.' },
+         { title: 'Visual Identity', desc: 'Crafting unique structural design systems that stand out in the dark.' }
+      ]
+    },
+    work: {
+      title: "Selected Work",
+      problemLabel: "The Problem",
+      solutionLabel: "The Solution",
+      impactLabel: "Impact",
+      items: [
+         {
+           title: "Eco-Vision",
+           category: "Identity & Motion",
+           problem: "A sustainable tech startup struggling to stand out with generic branding.",
+           solution: "Developed a structural, tech-forward identity with cinematic 3D motion graphics.",
+           impact: "Increased engagement by 300% and aided in securing $2M seed funding.",
+           image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop"
+         },
+         {
+           title: "Lumina",
+           category: "UI/UX Design",
+           problem: "A complex fintech app with low retention due to a confusing, data-heavy layout.",
+           solution: "Redesigned the dashboard using structural aesthetics and meaningful micro-interactions.",
+           impact: "Boosted daily active users by 45% and reduced support tickets.",
+           image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2670&auto=format&fit=crop"
+         }
+      ]
+    },
+    contact: {
+      letThe: "Let the",
+      magicBegin: "magic begin",
+      btn: "Get in touch",
+      avail: "Available for",
+      freelance: "Freelance opportunities",
+      platforms: ['Instagram', 'Behance', 'LinkedIn'] 
+    }
+  },
+  ar: {
+    nav: {
+      about: "من أنا",
+      expertise: "الخبرات",
+      work: "المشاريع",
+      contact: "تواصل معي"
+    },
+    role: { title: "الدور", descPart1: "مصمم جرافيك", descPart2: "(مستوى متوسط)" },
+    approach: { title: "المنهجية", descPart1: "تصميم بهدف.", descPart2: "إبداع بشغف." },
+    about: {
+      title: "من أنا",
+      headingLine1: "الدافع هو",
+      headingLine2: "الشغف.",
+      desc1: "أنا",
+      desc1Strong: "مصمم جرافيك مستوى متوسط",
+      desc1End: "ولدي نهج لا يقبل المساومة في السرد البصري.",
+      desc2Part1: "أدمج الجماليات الهيكلية مع السرد السينمائي لابتكار تصاميم لا تبدو رائعة وحسب، بل تنبض ",
+      desc2Alive: "بالحياة",
+      desc2Part2: ". يمثل كل مشروع فرصة لصناعة تجارب ذات هدف ورنين عاطفي وتفانٍ لا حدود له. لنبني شيئًا استثنائيًا.",
+      skills: ['الإدارة الفنية', 'الموشن جرافيك', 'واجهة وتجربة المستخدم', 'تصميم ثلاثي الأبعاد']
+    },
+    expertise: {
+      title: "الخبرات",
+      heading1: "صناعة",
+      heading2: "التجارب",
+      desc: "يتيح لي النهج متعدد التخصصات معالجة المشاريع من جميع الزوايا، مما يضمن منتجًا نهائيًا متماسكًا وجذابًا.",
+      items: [
+         { title: 'الإدارة الفنية', desc: 'توجيه السرد البصري لإنشاء عوالم علامة تجارية متماسكة وجذابة.' },
+         { title: 'الموشن جرافيك', desc: 'بث الحياة في التصاميم الثابتة برسوم متحركة سينمائية سلسة.' },
+         { title: 'الهوية البصرية', desc: 'ابتكار أنظمة هيكلية فريدة تبرز هويتك في وسط الزحام.' }
+      ]
+    },
+    work: {
+      title: "أعمال مختارة",
+      problemLabel: "المشكلة",
+      solutionLabel: "الحل",
+      impactLabel: "التأثير",
+      items: [
+         {
+           title: "إيكو فيجن",
+           category: "هوية بصرية وموشن",
+           problem: "شركة تقنية ناشئة مستدامة تعاني من التميز بهوية علامة تجارية تقليدية.",
+           solution: "تطوير هوية هيكلية وتقنية مبتكرة مع رسوم متحركة سينمائية ثلاثية الأبعاد.",
+           impact: "زيادة التفاعل بنسبة ٣٠٠٪ والمساهمة في تأمين تمويل بقيمة ٢ مليون دولار.",
+           image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop"
+         },
+         {
+           title: "لومينا",
+           category: "تصميم واجهة المستخدم",
+           problem: "تطبيق تقنية مالية معقد يعاني من انخفاض احتفاظ المستخدمين بسبب واجهة مليئة بالبيانات.",
+           solution: "إعادة تصميم واجهة المستخدم باستخدام الجماليات الهيكلية والتفاعلات الدقيقة المفيدة.",
+           impact: "زيادة المستخدمين النشطين يوميًا بنسبة ٤٥٪ وتقليل طلبات الدعم.",
+           image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2670&auto=format&fit=crop"
+         }
+      ]
+    },
+    contact: {
+      letThe: "لتبدأ",
+      magicBegin: "السحر",
+      btn: "تواصل معي",
+      avail: "متاح لـ",
+      freelance: "فرص العمل الحر",
+      platforms: ['انستجرام', 'بيهانس', 'لينكد إن'] 
+    }
+  }
+};
 
 export default function App() {
+  const [lang, setLang] = useState<'en' | 'ar'>('en');
+  const t = content[lang];
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [cursorPos, setCursorPos] = useState({ x: -1000, y: -1000 });
   const [pageIndex, setPageIndex] = useState(0);
+  const [prevIndex, setPrevIndex] = useState(0);
   const [direction, setDirection] = useState(1);
   const activePage = PAGES[pageIndex];
 
@@ -118,6 +254,7 @@ export default function App() {
     const targetIdx = PAGES.indexOf(targetPage);
     if (targetIdx !== pageIndex) {
       setDirection(targetIdx > pageIndex ? 1 : -1);
+      setPrevIndex(pageIndex);
       setPageIndex(targetIdx);
     }
   };
@@ -139,16 +276,29 @@ export default function App() {
     const handleWheel = (e: WheelEvent) => {
       if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
       
+      const scrollable = (e.target as Element).closest('.overflow-y-auto');
+      if (scrollable) {
+        const isAtTop = scrollable.scrollTop <= 0;
+        const isAtBottom = Math.abs(scrollable.scrollHeight - scrollable.scrollTop - scrollable.clientHeight) <= 1;
+
+        if ((e.deltaY < 0 && !isAtTop) || (e.deltaY > 0 && !isAtBottom)) {
+           // We are scrolling inside the section, let standard scrolling happen
+           return;
+        }
+      }
+
       const now = Date.now();
       if (now - lastScrollTime.current < 700) return; // Prevent rapid scrolling but feel responsive
       
       if (Math.abs(e.deltaY) > 20) {
         if (e.deltaY > 0 && pageIndex < PAGES.length - 1) {
            setDirection(1);
+           setPrevIndex(pageIndex);
            setPageIndex(p => p + 1);
            lastScrollTime.current = now;
         } else if (e.deltaY < 0 && pageIndex > 0) {
            setDirection(-1);
+           setPrevIndex(pageIndex);
            setPageIndex(p => p - 1);
            lastScrollTime.current = now;
         }
@@ -166,40 +316,43 @@ export default function App() {
     };
   }, [pageIndex]);
 
+  const isVertical = pageIndex === 0 || prevIndex === 0;
+  const transitionData = { direction, isVertical };
+
   const pageVariants = {
-    initial: (direction: number) => ({
-      y: direction > 0 ? "20%" : "-20%",
+    initial: ({ direction, isVertical }: { direction: number, isVertical: boolean }) => ({
+      y: isVertical ? (direction > 0 ? "15%" : "-15%") : 0,
+      x: !isVertical ? (direction > 0 ? "8%" : "-8%") : 0,
       opacity: 0,
-      scale: 0.95,
-      clipPath: direction > 0 ? "inset(100% 0% 0% 0% round 30px)" : "inset(0% 0% 100% 0% round 30px)",
-      filter: "blur(10px)"
+      scale: 0.98,
+      filter: "blur(12px)"
     }),
     animate: {
       y: 0,
+      x: 0,
       opacity: 1,
       scale: 1,
-      clipPath: "inset(0% 0% 0% 0% round 0px)",
       filter: "blur(0px)",
       transition: {
-        duration: 1.2,
+        duration: 1.4,
         ease: [0.16, 1, 0.3, 1]
       }
     },
-    exit: (direction: number) => ({
-      y: direction > 0 ? "-20%" : "20%",
+    exit: ({ direction, isVertical }: { direction: number, isVertical: boolean }) => ({
+      y: isVertical ? (direction > 0 ? "-15%" : "15%") : 0,
+      x: !isVertical ? (direction > 0 ? "-8%" : "8%") : 0,
       opacity: 0,
-      scale: 0.95,
-      clipPath: direction > 0 ? "inset(0% 0% 100% 0% round 30px)" : "inset(100% 0% 0% 0% round 30px)",
-      filter: "blur(10px)",
+      scale: 0.98,
+      filter: "blur(12px)",
       transition: {
         duration: 0.8,
-        ease: [0.16, 1, 0.3, 1]
+        ease: [0.22, 1, 0.36, 1]
       }
     })
   };
 
   return (
-    <div className="min-h-screen bg-transparent text-white overflow-hidden relative selection:bg-teal-500/30 font-sans flex flex-col">
+    <div dir={lang === 'ar' ? 'rtl' : 'ltr'} className="min-h-screen bg-transparent text-white overflow-hidden relative selection:bg-teal-500/30 font-sans flex flex-col">
       {/* Background Interactive Element */}
       <InteractiveBackground cursorPos={cursorPos} activePage={activePage} />
 
@@ -282,24 +435,26 @@ export default function App() {
              <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent opacity-20 pointer-events-none"></div>
              <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none"></div>
              
-             <button onClick={() => handleNav('about')} className={`${activePage === 'about' ? 'text-teal-400' : 'text-zinc-300'} hover:text-teal-400 text-[10px] font-medium tracking-[0.2em] uppercase transition-colors relative z-10`}>About me</button>
+             <button onClick={() => handleNav('about')} className={`${activePage === 'about' ? 'text-teal-400' : 'text-zinc-300'} hover:text-teal-400 text-[10px] font-medium tracking-[0.2em] uppercase transition-colors relative z-10`}>{t.nav.about}</button>
              <span className="w-[1px] h-2.5 bg-white/20 relative z-10"></span>
-             <button onClick={() => handleNav('expertise')} className={`${activePage === 'expertise' ? 'text-teal-400' : 'text-zinc-300'} hover:text-teal-400 text-[10px] font-medium tracking-[0.2em] uppercase transition-colors relative z-10`}>Expertise</button>
+             <button onClick={() => handleNav('expertise')} className={`${activePage === 'expertise' ? 'text-teal-400' : 'text-zinc-300'} hover:text-teal-400 text-[10px] font-medium tracking-[0.2em] uppercase transition-colors relative z-10`}>{t.nav.expertise}</button>
              <span className="w-[1px] h-2.5 bg-white/20 relative z-10"></span>
-             <button onClick={() => handleNav('contact')} className={`${activePage === 'contact' ? 'text-teal-400' : 'text-zinc-300'} hover:text-teal-400 text-[10px] font-medium tracking-[0.2em] uppercase transition-colors relative z-10`}>Contact</button>
+             <button onClick={() => handleNav('work')} className={`${activePage === 'work' ? 'text-teal-400' : 'text-zinc-300'} hover:text-teal-400 text-[10px] font-medium tracking-[0.2em] uppercase transition-colors relative z-10`}>{t.nav.work}</button>
+             <span className="w-[1px] h-2.5 bg-white/20 relative z-10"></span>
+             <button onClick={() => handleNav('contact')} className={`${activePage === 'contact' ? 'text-teal-400' : 'text-zinc-300'} hover:text-teal-400 text-[10px] font-medium tracking-[0.2em] uppercase transition-colors relative z-10`}>{t.nav.contact}</button>
           </motion.div>
 
-          {/* Power Icon - Right */}
+          {/* Language Icon - Right */}
           <motion.div
              animate={{ 
-               opacity: activePage === 'home' ? 0 : 1, 
-               y: activePage === 'home' ? -20 : 0 
+               opacity: 1, 
+               y: 0 
              }}
-             transition={{ duration: 0.8, delay: activePage === 'home' ? 0 : 0.5, ease: [0.16, 1, 0.3, 1] }}
-             className={activePage === 'home' ? 'pointer-events-none' : ''}
+             transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+             className="pointer-events-auto"
           >
-            <button aria-label="Action" onClick={() => handleNav('home')} className={`h-9 w-9 flex items-center justify-center rounded-full border border-white/10 ${activePage === 'home' ? 'bg-teal-500/20' : 'bg-white/5'} hover:bg-white/10 hover:border-white/30 backdrop-blur-xl transition-all duration-300 group shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:shadow-[0_0_25px_rgba(20,184,166,0.2)]`}>
-              <Power className={`w-4 h-4 ${activePage === 'home' ? 'text-teal-400' : 'text-zinc-400'} group-hover:text-teal-400 transition-colors duration-300`} strokeWidth={1.5} />
+            <button aria-label="Toggle Language" onClick={() => setLang(l => l === 'en' ? 'ar' : 'en')} className={`h-9 w-9 flex items-center justify-center rounded-full border border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/30 backdrop-blur-xl transition-all duration-300 group shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:shadow-[0_0_25px_rgba(20,184,166,0.2)]`}>
+              <Globe className="w-4 h-4 text-zinc-400 group-hover:text-teal-400 transition-colors duration-300" strokeWidth={1.5} />
             </button>
           </motion.div>
         </nav>
@@ -315,9 +470,9 @@ export default function App() {
         }}
         transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
       >
-        <div className="text-[8px] sm:text-[9px] uppercase tracking-[0.2em] md:tracking-[0.3em] font-sans text-white/60 max-w-[200px] text-left">
-          <span className="text-white/40 block mb-1">Role</span>
-          Mid Level<br />Graphic Designer
+        <div className="text-[8px] sm:text-[9px] uppercase tracking-[0.2em] md:tracking-[0.3em] font-sans text-white/60 max-w-[200px] text-start">
+          <span className="text-white/40 block mb-1">{t.role.title}</span>
+          {t.role.descPart1}<br />{t.role.descPart2}
         </div>
         <div className="hidden md:flex items-center justify-center gap-6 backdrop-blur-md bg-black/20 px-6 py-3 rounded-full border border-white/10 shadow-2xl pointer-events-auto">
           <a href="#" aria-label="Facebook" className="text-white/50 hover:text-teal-400 hover:scale-110 transition-all duration-300">
@@ -333,21 +488,21 @@ export default function App() {
             <MessageCircle className="w-4 h-4" strokeWidth={1.5} />
           </a>
         </div>
-        <div className="text-[8px] sm:text-[9px] uppercase tracking-[0.2em] md:tracking-[0.3em] font-sans text-white/60 text-right max-w-[200px]">
-          <span className="text-white/40 block mb-1">Approach</span>
-          Design with Purpose.<br />Create with Passion.
+        <div className="text-[8px] sm:text-[9px] uppercase tracking-[0.2em] md:tracking-[0.3em] font-sans text-white/60 text-end max-w-[200px]">
+          <span className="text-white/40 block mb-1">{t.approach.title}</span>
+          {t.approach.descPart1}<br />{t.approach.descPart2}
         </div>
       </motion.div>
       
       {/* Content wrapper with fixed height to prevent scrolling, using animate presence for paginated feel */}
       <main className="relative z-10 flex-grow w-full h-full overflow-hidden" style={{ perspective: "2000px" }}>
-        <AnimatePresence custom={direction} mode="sync">
+        <AnimatePresence custom={transitionData} mode="sync">
           
           {/* Home Section */}
           {activePage === 'home' && (
             <motion.section 
               key="page-home"
-              custom={direction}
+              custom={transitionData}
               variants={pageVariants}
               initial="initial"
               animate="animate"
@@ -363,7 +518,7 @@ export default function App() {
           {activePage === 'about' && (
             <motion.section 
               key="page-about"
-              custom={direction}
+              custom={transitionData}
               variants={pageVariants}
               initial="initial"
               animate="animate"
@@ -375,34 +530,30 @@ export default function App() {
                  <div className="lg:col-span-4 flex flex-col items-start">
                    <h2 className="text-sm md:text-base font-medium tracking-[0.4em] uppercase text-teal-500 mb-8 flex items-center gap-4">
                      <span className="w-8 h-[1px] bg-teal-500"></span>
-                     About me
+                     {t.about.title}
                      <span className="w-24 h-[1px] bg-teal-500/30"></span>
                    </h2>
                    <div className="font-display text-4xl md:text-5xl lg:text-7xl font-light text-white leading-tight">
-                     Driven by <br/>
-                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-teal-500 font-medium">passion.</span>
+                     {t.about.headingLine1} <br/>
+                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-teal-500 font-medium italic">{t.about.headingLine2}</span>
                    </div>
                  </div>
 
                  {/* Right side: Content */}
                  <div className="lg:col-span-8 relative">
-                   <div className="absolute -left-12 -top-12 text-[150px] font-magic text-teal-500/10 pointer-events-none select-none">
-                     S
-                   </div>
-                   
                    <div className="relative z-10 space-y-8 backdrop-blur-sm bg-black/10 p-8 md:p-12 rounded-3xl border border-white/5 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)]">
                      <p className="text-xl md:text-3xl font-light leading-relaxed text-zinc-200 font-sans">
-                       I am a <span className="text-white font-medium">Mid-Level Graphic Designer</span> with an uncompromising approach to visual storytelling.
+                       {t.about.desc1} <span className="text-white font-medium">{t.about.desc1Strong}</span> {t.about.desc1End}
                      </p>
                      
                      <div className="h-[1px] w-full bg-gradient-to-r from-white/20 to-transparent my-8"></div>
                      
                      <p className="text-base md:text-lg font-light leading-relaxed text-zinc-400 font-sans max-w-2xl">
-                       I blend structural aesthetics with cinematic narratives to create visuals that don't just look good, but feel <span className="text-teal-400 italic">alive</span>. Every project is an opportunity to craft experiences with purpose, emotional resonance, and endless dedication. Let's build something extraordinary.
+                       {t.about.desc2Part1}<span className="text-teal-400 italic">{t.about.desc2Alive}</span>{t.about.desc2Part2}
                      </p>
                      
                      <div className="flex flex-wrap gap-3 pt-6">
-                       {['Art Direction', 'Motion Graphics', 'UI/UX Design', '3D Generalist'].map((skill) => (
+                       {t.about.skills.map((skill) => (
                          <span key={skill} className="px-5 py-2.5 rounded-full border border-white/10 text-[10px] md:text-xs tracking-[0.2em] uppercase text-zinc-300 hover:text-white hover:bg-teal-500/20 hover:border-teal-500/50 transition-all duration-300 cursor-default">
                            {skill}
                          </span>
@@ -418,7 +569,7 @@ export default function App() {
           {activePage === 'expertise' && (
             <motion.section 
               key="page-expertise"
-              custom={direction}
+              custom={transitionData}
               variants={pageVariants}
               initial="initial"
               animate="animate"
@@ -430,24 +581,20 @@ export default function App() {
                    <div>
                      <h2 className="text-sm md:text-base font-medium tracking-[0.4em] uppercase text-teal-500 mb-6 flex items-center gap-4">
                        <span className="w-8 h-[1px] bg-teal-500"></span>
-                       Expertise
+                       {t.expertise.title}
                      </h2>
                      <h3 className="font-display text-3xl md:text-5xl font-light text-white leading-tight mb-8">
-                       Crafting <br className="hidden md:block"/>
-                       <span className="font-magic text-5xl md:text-7xl text-teal-400 capitalize block mt-2">experiences</span>
+                       {t.expertise.heading1} <br className="hidden md:block"/>
+                       <span className="font-display italic text-5xl md:text-7xl text-teal-400 block mt-2">{t.expertise.heading2}</span>
                      </h3>
                    </div>
                    <p className="text-sm text-zinc-400 leading-relaxed font-light mt-auto max-w-sm hidden md:block">
-                     A multidisciplinary approach allows me to tackle projects from all angles, ensuring a cohesive and striking final product.
+                     {t.expertise.desc}
                    </p>
                  </div>
 
                  <div className="md:w-2/3 flex flex-col gap-8">
-                   {[
-                     { title: 'Art Direction', desc: 'Guiding the visual narrative to create cohesive and striking brand worlds.' },
-                     { title: 'Motion Graphics', desc: 'Breathing life into static designs with fluid, cinematic animations.' },
-                     { title: 'Visual Identity', desc: 'Crafting unique structural design systems that stand out in the dark.' }
-                   ].map((item, i) => (
+                   {t.expertise.items.map((item, i) => (
                      <motion.div 
                        key={item.title}
                        initial={{ opacity: 0, x: 20 }}
@@ -473,11 +620,70 @@ export default function App() {
             </motion.section>
           )}
 
+          {/* Work Section */}
+          {activePage === 'work' && (
+            <motion.section 
+              key="page-work"
+              custom={transitionData}
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="absolute inset-0 pt-32 pb-12 px-6 md:px-24 z-20 overflow-y-auto no-scrollbar pointer-events-auto"
+            >
+              <div className="max-w-7xl mx-auto w-full pb-32">
+                 <h2 className="text-sm md:text-base font-medium tracking-[0.4em] uppercase text-teal-500 mb-16 flex items-center gap-4">
+                   <span className="w-8 h-[1px] bg-teal-500"></span>
+                   {t.work.title}
+                   <span className="w-24 h-[1px] bg-teal-500/30"></span>
+                 </h2>
+
+                 <div className="flex flex-col gap-24 lg:gap-32">
+                   {t.work.items.map((project, i) => (
+                     <div key={project.title} className={`flex flex-col lg:flex-row gap-8 lg:gap-16 items-center ${i % 2 !== 0 ? 'lg:flex-row-reverse' : ''}`}>
+                       {/* Project Image */}
+                       <div className="w-full lg:w-1/2 relative group rounded-3xl overflow-hidden aspect-[4/3] bg-white/5 border border-white/10 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)]">
+                         <div className="absolute inset-0 bg-teal-500/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"></div>
+                         <img src={project.image} alt={project.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                       </div>
+                       
+                       {/* Project Details */}
+                       <div className="w-full lg:w-1/2 flex flex-col space-y-8">
+                         <div>
+                           <div className="text-teal-400 text-xs md:text-sm font-medium tracking-[0.2em] uppercase mb-4">{project.category}</div>
+                           <h3 className="font-display text-3xl md:text-5xl font-light text-white leading-tight mb-6">
+                             {project.title}
+                           </h3>
+                         </div>
+                         
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-zinc-400 font-light leading-relaxed">
+                           <div className="space-y-2">
+                             <h4 className="text-white font-medium uppercase tracking-widest text-[10px]">{t.work.problemLabel}</h4>
+                             <p>{project.problem}</p>
+                           </div>
+                           <div className="space-y-2">
+                             <h4 className="text-white font-medium uppercase tracking-widest text-[10px]">{t.work.solutionLabel}</h4>
+                             <p>{project.solution}</p>
+                           </div>
+                         </div>
+                         
+                         <div className="pt-6 border-t border-white/10">
+                           <h4 className="text-teal-500 font-medium uppercase tracking-widest text-[10px] mb-2">{t.work.impactLabel}</h4>
+                           <p className="text-zinc-200">{project.impact}</p>
+                         </div>
+                       </div>
+                     </div>
+                   ))}
+                 </div>
+              </div>
+            </motion.section>
+          )}
+
           {/* Contact Section */}
           {activePage === 'contact' && (
             <motion.section 
               key="page-contact"
-              custom={direction}
+              custom={transitionData}
               variants={pageVariants}
               initial="initial"
               animate="animate"
@@ -491,29 +697,28 @@ export default function App() {
 
                   <h2 className="flex flex-col items-center justify-center gap-2 mix-blend-plus-lighter mb-12 relative z-10">
                     <span className="text-sm md:text-lg font-sans tracking-[0.8em] font-light uppercase text-zinc-400 mb-8 blur-[0.5px]">
-                      Let the
+                      {t.contact.letThe}
                     </span>
-                    <span className="font-magic text-[80px] sm:text-[120px] md:text-[160px] leading-[0.8] tracking-normal text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-teal-500 drop-shadow-2xl">
-                      magic begin
+                    <span className="font-magic text-[80px] sm:text-[120px] md:text-[160px] leading-[0.8] tracking-normal text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-teal-500 drop-shadow-2xl pb-8 md:pb-12 mt-4 md:-mt-6">
+                      {t.contact.magicBegin}
                     </span>
-                    <span className="text-teal-500 text-2xl md:text-3xl font-light mt-4">.</span>
                   </h2>
 
                   <button className="group px-12 py-5 rounded-full bg-transparent border border-teal-500/50 text-white text-xs md:text-sm font-medium tracking-[0.3em] uppercase hover:bg-teal-500 hover:text-black hover:border-teal-500 hover:scale-105 transition-all duration-500 relative z-10 overflow-hidden shadow-[0_0_40px_rgba(20,184,166,0.1)] hover:shadow-[0_0_60px_rgba(20,184,166,0.5)]">
-                    <span className="relative z-10">Get in touch</span>
+                    <span className="relative z-10">{t.contact.btn}</span>
                     <div className="absolute inset-0 bg-gradient-to-r from-teal-400 to-teal-600 translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500 ease-out z-0"></div>
                   </button>
                 </div>
               </div>
               
               <div className="w-full flex flex-col sm:flex-row justify-between items-end gap-6 text-[10px] sm:text-xs tracking-widest uppercase text-zinc-500 mt-auto pb-4">
-                <div className="flex flex-col gap-2 relative z-10 text-left">
-                  <span className="text-white/40">Available for</span>
-                  <span className="text-zinc-300">Freelance opportunities</span>
+                <div className="flex flex-col gap-2 relative z-10 min-w-[200px]">
+                  <span className="text-white/40">{t.contact.avail}</span>
+                  <span className="text-zinc-300">{t.contact.freelance}</span>
                 </div>
                 
-                <div className="flex gap-8 relative z-10">
-                  {['Instagram', 'Behance', 'LinkedIn'].map((platform) => (
+                <div className="flex gap-8 relative z-10 min-w-[200px] sm:justify-end">
+                  {t.contact.platforms.map((platform) => (
                     <a key={platform} href="#" className="hover:text-teal-400 transition-colors duration-300 relative group flex items-center">
                       {platform}
                       <span className="absolute -bottom-2 left-0 w-0 h-[1px] bg-teal-400 transition-all duration-300 group-hover:w-full"></span>
