@@ -1,10 +1,24 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Outfit:wght@300;400;500;600&family=Great+Vibes&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Outfit:wght@300;400;500;600&family=Great+Vibes&family=Alexandria:wght@300;400;500;700&family=El+Messiri:wght@400;500;600;700&family=Rakkas&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Playfair Display", ui-serif, Georgia, serif;
-  --font-magic: "Great Vibes", cursive;
+  --font-sans: var(--font-primary, "Outfit", ui-sans-serif, system-ui, sans-serif);
+  --font-display: var(--font-secondary, "Playfair Display", ui-serif, Georgia, serif);
+  --font-magic: var(--font-tertiary, "Great Vibes", cursive);
+}
+
+@layer base {
+  :root {
+    --font-primary: "Outfit", ui-sans-serif, system-ui, sans-serif;
+    --font-secondary: "Playfair Display", ui-serif, Georgia, serif;
+    --font-tertiary: "Great Vibes", cursive;
+  }
+  
+  [data-lang="ar"] {
+    --font-primary: "Alexandria", "Outfit", ui-sans-serif, system-ui, sans-serif;
+    --font-secondary: "El Messiri", "Playfair Display", ui-serif, Georgia, serif;
+    --font-tertiary: "Rakkas", "Great Vibes", cursive;
+  }
 }
 
 @layer utilities {

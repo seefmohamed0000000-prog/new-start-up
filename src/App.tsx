@@ -27,13 +27,13 @@ const InteractiveBackground = ({ cursorPos, activePage }: { cursorPos: { x: numb
            }}
            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
         >
-          <img 
-            src="/hero.png" 
-            alt="Hero image"
+          <video
+            src="/video-1.mp4" 
             className="absolute inset-0 w-full h-full object-cover"
-            onError={(e) => {
-             (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?q=80&w=2560&auto=format&fit=crop";
-            }}
+            autoPlay 
+            loop 
+            muted 
+            playsInline
           />
         </motion.div>
         
@@ -248,7 +248,16 @@ export default function App() {
   const [pageIndex, setPageIndex] = useState(0);
   const [prevIndex, setPrevIndex] = useState(0);
   const [direction, setDirection] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
   const activePage = PAGES[pageIndex];
+
+  useEffect(() => {
+    // Presentation intro sequence
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 5500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleNav = (targetPage: string) => {
     const targetIdx = PAGES.indexOf(targetPage);
@@ -352,7 +361,60 @@ export default function App() {
   };
 
   return (
-    <div dir={lang === 'ar' ? 'rtl' : 'ltr'} className="min-h-screen bg-transparent text-white overflow-hidden relative selection:bg-teal-500/30 font-sans flex flex-col">
+    <div data-lang={lang} dir="ltr" className="min-h-screen bg-transparent text-white overflow-hidden relative selection:bg-teal-500/30 font-sans flex flex-col">
+      <AnimatePresence>
+        {isLoading && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0, filter: "blur(10px)" }}
+            transition={{ duration: 1.5, ease: "easeInOut" }}
+            className="fixed inset-0 z-[999] bg-[#050505] flex flex-col items-center justify-center pointer-events-none"
+          >
+            <div className="flex flex-col items-center justify-center text-center">
+              <div className="overflow-hidden mb-3">
+                <motion.h1 
+                  initial={{ y: "100%", opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+                  className="font-display text-lg md:text-xl lg:text-2xl font-light text-white tracking-[0.3em] md:tracking-[0.5em] text-center uppercase pl-[0.3em] md:pl-[0.5em]"
+                >
+                  SEIF <span className="text-zinc-600">MOHAMED</span>
+                </motion.h1>
+              </div>
+              <div className="overflow-hidden">
+                <motion.p
+                  initial={{ y: "-100%", opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.8 }}
+                  className="text-[7px] md:text-[8px] text-[#5C7C8A] uppercase tracking-[0.4em] md:tracking-[0.6em] font-medium text-center pl-[0.4em] md:pl-[0.6em]"
+                >
+                  {t.role.descPart1} {t.role.descPart2}
+                </motion.p>
+              </div>
+              
+              <motion.div 
+                initial={{ scaleX: 0, opacity: 0 }}
+                animate={{ scaleX: 1, opacity: 1 }}
+                transition={{ duration: 1.5, ease: "easeInOut", delay: 1.5 }}
+                className="w-full max-w-[80px] md:max-w-[120px] h-[1px] bg-gradient-to-r from-transparent via-[#5C7C8A]/40 to-transparent mt-8 mb-6 origin-center"
+              />
+              
+              <motion.div
+                 initial={{ opacity: 0 }}
+                 animate={{ opacity: 1 }}
+                 transition={{ duration: 1, ease: 'easeInOut', delay: 2.2 }}
+                 className="flex flex-col items-center"
+              >
+                  <div className="relative flex items-center justify-center">
+                    <div className="absolute w-6 h-6 border-[1px] border-[#5C7C8A]/20 rounded-full"></div>
+                    <div className="w-6 h-6 border-[1px] border-transparent border-t-[#5C7C8A] rounded-full animate-spin"></div>
+                  </div>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Background Interactive Element */}
       <InteractiveBackground cursorPos={cursorPos} activePage={activePage} />
 
@@ -429,34 +491,23 @@ export default function App() {
                scale: activePage === 'home' ? 0.95 : 1
              }}
              transition={{ duration: 0.8, delay: activePage === 'home' ? 0 : 0.4, ease: [0.16, 1, 0.3, 1] }}
-             className={`hidden md:flex items-center gap-5 px-6 py-2.5 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)] relative overflow-hidden group/nav ${activePage === 'home' ? 'pointer-events-none' : ''}`}
+             className={`hidden md:flex items-center gap-5 px-6 py-2.5 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)] relative overflow-hidden group/nav ${activePage === 'home' ? 'pointer-events-none' : 'pointer-events-auto'}`}
           >
              {/* Inner glass highlight gradient */}
              <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent opacity-20 pointer-events-none"></div>
              <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none"></div>
              
-             <button onClick={() => handleNav('about')} className={`${activePage === 'about' ? 'text-teal-400' : 'text-zinc-300'} hover:text-teal-400 text-[10px] font-medium tracking-[0.2em] uppercase transition-colors relative z-10`}>{t.nav.about}</button>
+             <button onClick={() => handleNav('about')} className={`${activePage === 'about' ? 'text-teal-400' : 'text-zinc-300'} hover:text-teal-400 text-[10px] font-medium ${lang === 'en' ? 'tracking-[0.2em]' : ''} uppercase transition-colors relative z-10 whitespace-nowrap`}>{t.nav.about}</button>
              <span className="w-[1px] h-2.5 bg-white/20 relative z-10"></span>
-             <button onClick={() => handleNav('expertise')} className={`${activePage === 'expertise' ? 'text-teal-400' : 'text-zinc-300'} hover:text-teal-400 text-[10px] font-medium tracking-[0.2em] uppercase transition-colors relative z-10`}>{t.nav.expertise}</button>
+             <button onClick={() => handleNav('expertise')} className={`${activePage === 'expertise' ? 'text-teal-400' : 'text-zinc-300'} hover:text-teal-400 text-[10px] font-medium ${lang === 'en' ? 'tracking-[0.2em]' : ''} uppercase transition-colors relative z-10 whitespace-nowrap`}>{t.nav.expertise}</button>
              <span className="w-[1px] h-2.5 bg-white/20 relative z-10"></span>
-             <button onClick={() => handleNav('work')} className={`${activePage === 'work' ? 'text-teal-400' : 'text-zinc-300'} hover:text-teal-400 text-[10px] font-medium tracking-[0.2em] uppercase transition-colors relative z-10`}>{t.nav.work}</button>
+             <button onClick={() => handleNav('work')} className={`${activePage === 'work' ? 'text-teal-400' : 'text-zinc-300'} hover:text-teal-400 text-[10px] font-medium ${lang === 'en' ? 'tracking-[0.2em]' : ''} uppercase transition-colors relative z-10 whitespace-nowrap`}>{t.nav.work}</button>
              <span className="w-[1px] h-2.5 bg-white/20 relative z-10"></span>
-             <button onClick={() => handleNav('contact')} className={`${activePage === 'contact' ? 'text-teal-400' : 'text-zinc-300'} hover:text-teal-400 text-[10px] font-medium tracking-[0.2em] uppercase transition-colors relative z-10`}>{t.nav.contact}</button>
+             <button onClick={() => handleNav('contact')} className={`${activePage === 'contact' ? 'text-teal-400' : 'text-zinc-300'} hover:text-teal-400 text-[10px] font-medium ${lang === 'en' ? 'tracking-[0.2em]' : ''} uppercase transition-colors relative z-10 whitespace-nowrap`}>{t.nav.contact}</button>
           </motion.div>
 
-          {/* Language Icon - Right */}
-          <motion.div
-             animate={{ 
-               opacity: 1, 
-               y: 0 
-             }}
-             transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-             className="pointer-events-auto"
-          >
-            <button aria-label="Toggle Language" onClick={() => setLang(l => l === 'en' ? 'ar' : 'en')} className={`h-9 w-9 flex items-center justify-center rounded-full border border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/30 backdrop-blur-xl transition-all duration-300 group shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:shadow-[0_0_25px_rgba(20,184,166,0.2)]`}>
-              <Globe className="w-4 h-4 text-zinc-400 group-hover:text-teal-400 transition-colors duration-300" strokeWidth={1.5} />
-            </button>
-          </motion.div>
+          {/* Right Placeholder */}
+          <div className="w-32 md:w-48"></div>
         </nav>
       </motion.div>
 
@@ -470,7 +521,7 @@ export default function App() {
         }}
         transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
       >
-        <div className="text-[8px] sm:text-[9px] uppercase tracking-[0.2em] md:tracking-[0.3em] font-sans text-white/60 max-w-[200px] text-start">
+        <div className={`text-[8px] sm:text-[9px] uppercase ${lang === 'en' ? 'tracking-[0.2em] md:tracking-[0.3em]' : ''} font-sans text-white/60 max-w-[200px] text-left`} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
           <span className="text-white/40 block mb-1">{t.role.title}</span>
           {t.role.descPart1}<br />{t.role.descPart2}
         </div>
@@ -488,7 +539,7 @@ export default function App() {
             <MessageCircle className="w-4 h-4" strokeWidth={1.5} />
           </a>
         </div>
-        <div className="text-[8px] sm:text-[9px] uppercase tracking-[0.2em] md:tracking-[0.3em] font-sans text-white/60 text-end max-w-[200px]">
+        <div className={`text-[8px] sm:text-[9px] uppercase ${lang === 'en' ? 'tracking-[0.2em] md:tracking-[0.3em]' : ''} font-sans text-white/60 text-right max-w-[200px]`} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
           <span className="text-white/40 block mb-1">{t.approach.title}</span>
           {t.approach.descPart1}<br />{t.approach.descPart2}
         </div>
@@ -528,19 +579,19 @@ export default function App() {
                <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-center">
                  {/* Left side: Heading */}
                  <div className="lg:col-span-4 flex flex-col items-start">
-                   <h2 className="text-sm md:text-base font-medium tracking-[0.4em] uppercase text-teal-500 mb-8 flex items-center gap-4">
+                   <h2 className={`text-sm md:text-base font-medium ${lang === 'en' ? 'tracking-[0.4em]' : ''} uppercase text-teal-500 mb-8 flex items-center gap-4`}>
                      <span className="w-8 h-[1px] bg-teal-500"></span>
                      {t.about.title}
                      <span className="w-24 h-[1px] bg-teal-500/30"></span>
                    </h2>
-                   <div className="font-display text-4xl md:text-5xl lg:text-7xl font-light text-white leading-tight">
+                   <div className={`font-display text-4xl md:text-5xl lg:text-7xl font-light text-white ${lang === 'ar' ? 'leading-normal' : 'leading-tight'}`}>
                      {t.about.headingLine1} <br/>
-                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-teal-500 font-medium italic">{t.about.headingLine2}</span>
+                     <span className={`text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-teal-500 font-medium italic ${lang === 'ar' ? 'pt-4 pb-4 px-2 block' : 'pb-2 px-2'}`}>{t.about.headingLine2}</span>
                    </div>
                  </div>
 
                  {/* Right side: Content */}
-                 <div className="lg:col-span-8 relative">
+                 <div className="lg:col-span-8 relative" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
                    <div className="relative z-10 space-y-8 backdrop-blur-sm bg-black/10 p-8 md:p-12 rounded-3xl border border-white/5 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)]">
                      <p className="text-xl md:text-3xl font-light leading-relaxed text-zinc-200 font-sans">
                        {t.about.desc1} <span className="text-white font-medium">{t.about.desc1Strong}</span> {t.about.desc1End}
@@ -554,7 +605,7 @@ export default function App() {
                      
                      <div className="flex flex-wrap gap-3 pt-6">
                        {t.about.skills.map((skill) => (
-                         <span key={skill} className="px-5 py-2.5 rounded-full border border-white/10 text-[10px] md:text-xs tracking-[0.2em] uppercase text-zinc-300 hover:text-white hover:bg-teal-500/20 hover:border-teal-500/50 transition-all duration-300 cursor-default">
+                         <span key={skill} className={`px-5 py-2.5 rounded-full border border-white/10 text-[10px] md:text-xs ${lang === 'en' ? 'tracking-[0.2em]' : ''} uppercase text-zinc-300 hover:text-white hover:bg-teal-500/20 hover:border-teal-500/50 transition-all duration-300 cursor-default`}>
                            {skill}
                          </span>
                        ))}
@@ -579,13 +630,13 @@ export default function App() {
               <div className="max-w-7xl mx-auto w-full flex flex-col md:flex-row gap-16 lg:gap-32">
                  <div className="md:w-1/3 flex flex-col justify-between">
                    <div>
-                     <h2 className="text-sm md:text-base font-medium tracking-[0.4em] uppercase text-teal-500 mb-6 flex items-center gap-4">
+                     <h2 className={`text-sm md:text-base font-medium ${lang === 'en' ? 'tracking-[0.4em]' : ''} uppercase text-teal-500 mb-6 flex items-center gap-4`}>
                        <span className="w-8 h-[1px] bg-teal-500"></span>
                        {t.expertise.title}
                      </h2>
                      <h3 className="font-display text-3xl md:text-5xl font-light text-white leading-tight mb-8">
                        {t.expertise.heading1} <br className="hidden md:block"/>
-                       <span className="font-display italic text-5xl md:text-7xl text-teal-400 block mt-2">{t.expertise.heading2}</span>
+                       <span className={`font-display italic text-5xl md:text-7xl text-teal-400 block mt-2 ${lang === 'ar' ? 'pt-6 pb-2 px-2' : ''}`}>{t.expertise.heading2}</span>
                      </h3>
                    </div>
                    <p className="text-sm text-zinc-400 leading-relaxed font-light mt-auto max-w-sm hidden md:block">
@@ -593,7 +644,7 @@ export default function App() {
                    </p>
                  </div>
 
-                 <div className="md:w-2/3 flex flex-col gap-8">
+                 <div className="md:w-2/3 flex flex-col gap-8" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
                    {t.expertise.items.map((item, i) => (
                      <motion.div 
                        key={item.title}
@@ -606,7 +657,7 @@ export default function App() {
                          0{i+1}
                        </div>
                        <div className="flex-1">
-                         <h4 className="text-xl md:text-3xl font-display font-light mb-3 text-zinc-200 group-hover:text-white transition-colors duration-500 tracking-wider">
+                         <h4 className={`text-xl md:text-3xl font-display font-light mb-3 text-zinc-200 group-hover:text-white transition-colors duration-500 ${lang === 'en' ? 'tracking-wider' : ''}`}>
                            {item.title}
                          </h4>
                          <p className="text-sm md:text-base text-zinc-500 font-light leading-relaxed max-w-lg group-hover:text-zinc-400 transition-colors duration-500">
@@ -632,7 +683,7 @@ export default function App() {
               className="absolute inset-0 pt-32 pb-12 px-6 md:px-24 z-20 overflow-y-auto no-scrollbar pointer-events-auto"
             >
               <div className="max-w-7xl mx-auto w-full pb-32">
-                 <h2 className="text-sm md:text-base font-medium tracking-[0.4em] uppercase text-teal-500 mb-16 flex items-center gap-4">
+                 <h2 className={`text-sm md:text-base font-medium ${lang === 'en' ? 'tracking-[0.4em]' : ''} uppercase text-teal-500 mb-16 flex items-center gap-4`}>
                    <span className="w-8 h-[1px] bg-teal-500"></span>
                    {t.work.title}
                    <span className="w-24 h-[1px] bg-teal-500/30"></span>
@@ -648,9 +699,9 @@ export default function App() {
                        </div>
                        
                        {/* Project Details */}
-                       <div className="w-full lg:w-1/2 flex flex-col space-y-8">
+                       <div className={`w-full lg:w-1/2 flex flex-col space-y-8 ${lang === 'ar' ? 'text-right' : ''}`} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
                          <div>
-                           <div className="text-teal-400 text-xs md:text-sm font-medium tracking-[0.2em] uppercase mb-4">{project.category}</div>
+                           <div className={`text-teal-400 text-xs md:text-sm font-medium ${lang === 'en' ? 'tracking-[0.2em]' : ''} uppercase mb-4`}>{project.category}</div>
                            <h3 className="font-display text-3xl md:text-5xl font-light text-white leading-tight mb-6">
                              {project.title}
                            </h3>
@@ -658,17 +709,17 @@ export default function App() {
                          
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-zinc-400 font-light leading-relaxed">
                            <div className="space-y-2">
-                             <h4 className="text-white font-medium uppercase tracking-widest text-[10px]">{t.work.problemLabel}</h4>
+                             <h4 className={`text-white font-medium uppercase ${lang === 'en' ? 'tracking-widest' : ''} text-[10px]`}>{t.work.problemLabel}</h4>
                              <p>{project.problem}</p>
                            </div>
                            <div className="space-y-2">
-                             <h4 className="text-white font-medium uppercase tracking-widest text-[10px]">{t.work.solutionLabel}</h4>
+                             <h4 className={`text-white font-medium uppercase ${lang === 'en' ? 'tracking-widest' : ''} text-[10px]`}>{t.work.solutionLabel}</h4>
                              <p>{project.solution}</p>
                            </div>
                          </div>
                          
                          <div className="pt-6 border-t border-white/10">
-                           <h4 className="text-teal-500 font-medium uppercase tracking-widest text-[10px] mb-2">{t.work.impactLabel}</h4>
+                           <h4 className={`text-teal-500 font-medium uppercase ${lang === 'en' ? 'tracking-widest' : ''} text-[10px] mb-2`}>{t.work.impactLabel}</h4>
                            <p className="text-zinc-200">{project.impact}</p>
                          </div>
                        </div>
@@ -695,23 +746,23 @@ export default function App() {
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30vw] h-[30vw] min-w-[300px] border border-teal-500/10 rounded-full animate-[spin_40s_linear_infinite] pointer-events-none"></div>
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40vw] h-[40vw] min-w-[400px] border border-white/5 rounded-full animate-[spin_60s_linear_infinite_reverse] pointer-events-none"></div>
 
-                  <h2 className="flex flex-col items-center justify-center gap-2 mix-blend-plus-lighter mb-12 relative z-10">
-                    <span className="text-sm md:text-lg font-sans tracking-[0.8em] font-light uppercase text-zinc-400 mb-8 blur-[0.5px]">
+                  <h2 className={`flex flex-col items-center justify-center gap-2 mix-blend-plus-lighter relative z-10 w-full text-center ${lang === 'ar' ? 'mb-4 md:mb-6' : 'mb-8 md:mb-12'}`}>
+                    <span className={`text-sm md:text-lg font-sans font-light uppercase text-zinc-400 blur-[0.5px] relative z-20 ${lang === 'en' ? 'tracking-[0.8em] mb-2 md:mb-4' : '-mb-6 md:-mb-10'}`}>
                       {t.contact.letThe}
                     </span>
-                    <span className="font-magic text-[80px] sm:text-[120px] md:text-[160px] leading-[0.8] tracking-normal text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-teal-500 drop-shadow-2xl pb-8 md:pb-12 mt-4 md:-mt-6">
+                    <span className={`font-magic text-[80px] sm:text-[120px] md:text-[160px] tracking-normal text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-teal-500 drop-shadow-2xl px-4 pb-8 md:pb-12 ${lang === 'ar' ? 'leading-normal pt-12 md:pt-20 block' : 'leading-[0.8] mt-4 md:-mt-6'}`}>
                       {t.contact.magicBegin}
                     </span>
                   </h2>
 
-                  <button className="group px-12 py-5 rounded-full bg-transparent border border-teal-500/50 text-white text-xs md:text-sm font-medium tracking-[0.3em] uppercase hover:bg-teal-500 hover:text-black hover:border-teal-500 hover:scale-105 transition-all duration-500 relative z-10 overflow-hidden shadow-[0_0_40px_rgba(20,184,166,0.1)] hover:shadow-[0_0_60px_rgba(20,184,166,0.5)]">
+                  <button className={`group px-12 py-5 rounded-full bg-transparent border border-teal-500/50 text-white text-xs md:text-sm font-medium ${lang === 'en' ? 'tracking-[0.3em]' : ''} uppercase hover:bg-teal-500 hover:text-black hover:border-teal-500 hover:scale-105 transition-all duration-500 relative z-10 overflow-hidden shadow-[0_0_40px_rgba(20,184,166,0.1)] hover:shadow-[0_0_60px_rgba(20,184,166,0.5)]`}>
                     <span className="relative z-10">{t.contact.btn}</span>
                     <div className="absolute inset-0 bg-gradient-to-r from-teal-400 to-teal-600 translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500 ease-out z-0"></div>
                   </button>
                 </div>
               </div>
               
-              <div className="w-full flex flex-col sm:flex-row justify-between items-end gap-6 text-[10px] sm:text-xs tracking-widest uppercase text-zinc-500 mt-auto pb-4">
+              <div className={`w-full flex flex-col sm:flex-row justify-between items-end gap-6 text-[10px] sm:text-xs ${lang === 'en' ? 'tracking-widest' : ''} uppercase text-zinc-500 mt-auto pb-4`}>
                 <div className="flex flex-col gap-2 relative z-10 min-w-[200px]">
                   <span className="text-white/40">{t.contact.avail}</span>
                   <span className="text-zinc-300">{t.contact.freelance}</span>
