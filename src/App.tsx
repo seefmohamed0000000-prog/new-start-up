@@ -2,11 +2,60 @@ import { Globe, Facebook, Linkedin, Twitter, MessageCircle } from "lucide-react"
 import { motion, useSpring, AnimatePresence } from "motion/react";
 import { useEffect, useState, useRef } from "react";
 
+const SeamlessVideoLoop = ({ src }: { src: string }) => {
+  const video1Ref = useRef<HTMLVideoElement>(null);
+  const video2Ref = useRef<HTMLVideoElement>(null);
+  const [activeVideo, setActiveVideo] = useState<1 | 2>(1);
+
+  const handleTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement>, currentId: 1 | 2) => {
+    const video = e.target as HTMLVideoElement;
+    const fadeDuration = 2.0; // 2 seconds crossfade
+    
+    if (video.duration && video.duration - video.currentTime <= fadeDuration) {
+      if (activeVideo === currentId) {
+        const nextId = currentId === 1 ? 2 : 1;
+        const nextVideo = nextId === 1 ? video1Ref.current : video2Ref.current;
+        if (nextVideo) {
+          nextVideo.currentTime = 0;
+          nextVideo.play().catch(() => {});
+        }
+        setActiveVideo(nextId);
+      }
+    }
+  };
+
+  return (
+    <>
+      <video
+        ref={video1Ref}
+        src={src}
+        className={`absolute inset-0 w-full h-full object-cover transition-opacity ease-in-out ${activeVideo === 1 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+        style={{ transitionDuration: '2000ms' }}
+        muted
+        playsInline
+        autoPlay
+        onTimeUpdate={(e) => handleTimeUpdate(e, 1)}
+        onEnded={(e) => (e.target as HTMLVideoElement).pause()}
+      />
+      <video
+        ref={video2Ref}
+        src={src}
+        className={`absolute inset-0 w-full h-full object-cover transition-opacity ease-in-out ${activeVideo === 2 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+        style={{ transitionDuration: '2000ms' }}
+        muted
+        playsInline
+        onTimeUpdate={(e) => handleTimeUpdate(e, 2)}
+        onEnded={(e) => (e.target as HTMLVideoElement).pause()}
+      />
+    </>
+  );
+};
+
 const InteractiveBackground = ({ cursorPos, activePage }: { cursorPos: { x: number, y: number }, activePage: string }) => {
   // Use framer-motion spring for smooth trailing of the cursor
   const springX = useSpring(0, { stiffness: 40, damping: 20 });
   const springY = useSpring(0, { stiffness: 40, damping: 20 });
-
+  
   useEffect(() => {
     springX.set(cursorPos.x - 250); // 250 is half the width of the follower 
     springY.set(cursorPos.y - 250);
@@ -27,14 +76,7 @@ const InteractiveBackground = ({ cursorPos, activePage }: { cursorPos: { x: numb
            }}
            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
         >
-          <video
-            src="/video-1.mp4" 
-            className="absolute inset-0 w-full h-full object-cover"
-            autoPlay 
-            loop 
-            muted 
-            playsInline
-          />
+          <SeamlessVideoLoop src="/video-1.mp4" />
         </motion.div>
         
         {/* Overall dark overlay to prevent background from overpowering content */}
@@ -92,6 +134,20 @@ const InteractiveBackground = ({ cursorPos, activePage }: { cursorPos: { x: numb
             />
           </motion.div>
         )}
+
+        {activePage === 'thanks' && (
+          <motion.div key="bg-thanks" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1 }} className="absolute inset-0 flex items-center justify-center">
+            {/* Elegant slow pulsing orb for thanks page */}
+            <motion.div
+              animate={{
+                scale: [1, 1.2, 1],
+                opacity: [0.2, 0.4, 0.2]
+              }}
+              transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+              className="w-[60vw] h-[60vw] max-w-[800px] max-h-[800px] rounded-full bg-[#5C7C8A]/10 blur-[140px] pointer-events-none"
+            />
+          </motion.div>
+        )}
       </AnimatePresence>
 
       {/* Interactive Cursor Follower - Acts like a light/liquid source */}
@@ -105,7 +161,7 @@ const InteractiveBackground = ({ cursorPos, activePage }: { cursorPos: { x: numb
   );
 };
 
-const PAGES = ['home', 'about', 'expertise', 'work', 'contact'];
+const PAGES = ['home', 'about', 'expertise', 'work', 'contact', 'thanks'];
 
 const content = {
   en: {
@@ -171,6 +227,12 @@ const content = {
       avail: "Available for",
       freelance: "Freelance opportunities",
       platforms: ['Instagram', 'Behance', 'LinkedIn'] 
+    },
+    thanks: {
+      title: "THANK YOU",
+      message: "For taking the time to explore my visual journey.",
+      subMessage: "Let's create something memorable together.",
+      btn: "Back to Home"
     }
   },
   ar: {
@@ -236,6 +298,12 @@ const content = {
       avail: "متاح لـ",
       freelance: "فرص العمل الحر",
       platforms: ['انستجرام', 'بيهانس', 'لينكد إن'] 
+    },
+    thanks: {
+      title: "شكرًا لك",
+      message: "على وقتك في استكشاف رحلتي البصرية.",
+      subMessage: "لنبني شيئًا لا يُنسى معًا.",
+      btn: "العودة للرئيسية"
     }
   }
 };
@@ -497,13 +565,25 @@ export default function App() {
              <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent opacity-20 pointer-events-none"></div>
              <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none"></div>
              
-             <button onClick={() => handleNav('about')} className={`${activePage === 'about' ? 'text-teal-400' : 'text-zinc-300'} hover:text-teal-400 text-[10px] font-medium ${lang === 'en' ? 'tracking-[0.2em]' : ''} uppercase transition-colors relative z-10 whitespace-nowrap`}>{t.nav.about}</button>
+             <button onClick={() => handleNav('about')} className={`group ${activePage === 'about' ? 'text-teal-400' : 'text-zinc-300'} hover:text-teal-300 text-[10px] font-medium ${lang === 'en' ? 'tracking-[0.2em]' : ''} uppercase transition-colors duration-300 relative z-10 whitespace-nowrap`}>
+               {t.nav.about}
+               <span className={`absolute -bottom-1 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-teal-400/80 to-transparent transform origin-center transition-all duration-500 ease-out ${activePage === 'about' ? 'scale-x-100 opacity-100' : 'scale-x-0 opacity-0 group-hover:scale-x-75 group-hover:opacity-100'}`}></span>
+             </button>
              <span className="w-[1px] h-2.5 bg-white/20 relative z-10"></span>
-             <button onClick={() => handleNav('expertise')} className={`${activePage === 'expertise' ? 'text-teal-400' : 'text-zinc-300'} hover:text-teal-400 text-[10px] font-medium ${lang === 'en' ? 'tracking-[0.2em]' : ''} uppercase transition-colors relative z-10 whitespace-nowrap`}>{t.nav.expertise}</button>
+             <button onClick={() => handleNav('expertise')} className={`group ${activePage === 'expertise' ? 'text-teal-400' : 'text-zinc-300'} hover:text-teal-300 text-[10px] font-medium ${lang === 'en' ? 'tracking-[0.2em]' : ''} uppercase transition-colors duration-300 relative z-10 whitespace-nowrap`}>
+               {t.nav.expertise}
+               <span className={`absolute -bottom-1 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-teal-400/80 to-transparent transform origin-center transition-all duration-500 ease-out ${activePage === 'expertise' ? 'scale-x-100 opacity-100' : 'scale-x-0 opacity-0 group-hover:scale-x-75 group-hover:opacity-100'}`}></span>
+             </button>
              <span className="w-[1px] h-2.5 bg-white/20 relative z-10"></span>
-             <button onClick={() => handleNav('work')} className={`${activePage === 'work' ? 'text-teal-400' : 'text-zinc-300'} hover:text-teal-400 text-[10px] font-medium ${lang === 'en' ? 'tracking-[0.2em]' : ''} uppercase transition-colors relative z-10 whitespace-nowrap`}>{t.nav.work}</button>
+             <button onClick={() => handleNav('work')} className={`group ${activePage === 'work' ? 'text-teal-400' : 'text-zinc-300'} hover:text-teal-300 text-[10px] font-medium ${lang === 'en' ? 'tracking-[0.2em]' : ''} uppercase transition-colors duration-300 relative z-10 whitespace-nowrap`}>
+               {t.nav.work}
+               <span className={`absolute -bottom-1 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-teal-400/80 to-transparent transform origin-center transition-all duration-500 ease-out ${activePage === 'work' ? 'scale-x-100 opacity-100' : 'scale-x-0 opacity-0 group-hover:scale-x-75 group-hover:opacity-100'}`}></span>
+             </button>
              <span className="w-[1px] h-2.5 bg-white/20 relative z-10"></span>
-             <button onClick={() => handleNav('contact')} className={`${activePage === 'contact' ? 'text-teal-400' : 'text-zinc-300'} hover:text-teal-400 text-[10px] font-medium ${lang === 'en' ? 'tracking-[0.2em]' : ''} uppercase transition-colors relative z-10 whitespace-nowrap`}>{t.nav.contact}</button>
+             <button onClick={() => handleNav('contact')} className={`group ${activePage === 'contact' ? 'text-teal-400' : 'text-zinc-300'} hover:text-teal-300 text-[10px] font-medium ${lang === 'en' ? 'tracking-[0.2em]' : ''} uppercase transition-colors duration-300 relative z-10 whitespace-nowrap`}>
+               {t.nav.contact}
+               <span className={`absolute -bottom-1 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-teal-400/80 to-transparent transform origin-center transition-all duration-500 ease-out ${activePage === 'contact' ? 'scale-x-100 opacity-100' : 'scale-x-0 opacity-0 group-hover:scale-x-75 group-hover:opacity-100'}`}></span>
+             </button>
           </motion.div>
 
           {/* Right Placeholder */}
@@ -775,6 +855,60 @@ export default function App() {
                       <span className="absolute -bottom-2 left-0 w-0 h-[1px] bg-teal-400 transition-all duration-300 group-hover:w-full"></span>
                     </a>
                   ))}
+                </div>
+              </div>
+            </motion.section>
+          )}
+
+          {/* Thanks Section */}
+          {activePage === 'thanks' && (
+            <motion.section 
+              key="page-thanks"
+              custom={transitionData}
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="absolute inset-0 pt-32 pb-12 flex flex-col items-center justify-center px-6 md:px-24 z-20"
+            >
+              <div className="w-full flex-grow flex flex-col items-center justify-center">
+                <div className="text-center w-full max-w-3xl mx-auto flex flex-col items-center relative">
+                  
+                  {/* Subtle ambient rings */}
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[20vw] h-[20vw] min-w-[200px] border-[0.5px] border-[#5C7C8A]/10 rounded-[40%] animate-[spin_30s_linear_infinite] pointer-events-none"></div>
+                  
+                  <motion.h2 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, delay: 0.2 }}
+                    className={`font-display text-4xl md:text-5xl lg:text-6xl font-light text-white uppercase ${lang === 'en' ? 'tracking-[0.2em] md:tracking-[0.4em]' : ''} mb-6 md:mb-8 blend-difference px-4 text-center`}
+                  >
+                    {t.thanks.title}
+                  </motion.h2>
+
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1, delay: 0.8 }}
+                    className="flex flex-col items-center gap-1 md:gap-2"
+                  >
+                     <p className={`text-sm md:text-base lg:text-lg font-sans font-light text-zinc-300 ${lang === 'en' ? 'tracking-[0.1em]' : ''}`}>
+                       {t.thanks.message}
+                     </p>
+                     <p className={`text-xs md:text-sm font-sans font-medium text-[#5C7C8A] ${lang === 'en' ? 'tracking-[0.05em]' : ''} mt-2`}>
+                       {t.thanks.subMessage}
+                     </p>
+                  </motion.div>
+
+                  <motion.button 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, delay: 1.4 }}
+                    onClick={() => handleNav('home')}
+                    className={`mt-16 group px-10 py-4 md:px-12 md:py-5 rounded-full bg-transparent border border-[#5C7C8A]/30 text-white text-[10px] md:text-xs font-medium ${lang === 'en' ? 'tracking-[0.3em]' : ''} uppercase hover:bg-[#5C7C8A]/10 hover:border-[#5C7C8A] transition-all duration-500 relative z-10 overflow-hidden backdrop-blur-md`}
+                  >
+                    <span className="relative z-10">{t.thanks.btn}</span>
+                  </motion.button>
                 </div>
               </div>
             </motion.section>
