@@ -503,7 +503,7 @@ export default function App() {
       <motion.div 
         animate={{ x: mousePosition.x * -1, y: mousePosition.y * -1 }}
         transition={{ type: "spring", stiffness: 50, damping: 30 }}
-        className="fixed top-0 left-0 w-full z-40 pointer-events-none"
+        className="fixed top-0 left-0 w-full z-50 pointer-events-none"
       >
         <div className="w-full h-full relative pointer-events-none">
           {/* Global Branding Name that smoothly morphs positioning */}
