@@ -1,5 +1,5 @@
 import { Globe, Facebook, Linkedin, MessageCircle } from "lucide-react";
-import { motion, useSpring, AnimatePresence } from "motion/react";
+import { motion, useSpring, AnimatePresence, useMotionValue } from "motion/react";
 import React, { useEffect, useState, useRef } from "react";
 
 const XIcon = ({ className }: { className?: string }) => (
@@ -155,15 +155,55 @@ const InteractiveBackground = ({ cursorPos, activePage }: { cursorPos: { x: numb
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Interactive Cursor Follower - Acts like a light/liquid source */}
-      {cursorPos.x !== -1000 && (
-        <motion.div 
-          style={{ x: springX, y: springY }}
-          className="absolute top-0 left-0 w-[500px] h-[500px] rounded-full bg-teal-500/10 blur-[100px] pointer-events-none hidden md:block mix-blend-screen"
-        />
-      )}
     </div>
+  );
+};
+
+const CustomCursor = () => {
+  const [isHovering, setIsHovering] = useState(false);
+  
+  const cursorX = useMotionValue(-100);
+  const cursorY = useMotionValue(-100);
+  
+  // Use springs only for size/offset to keep it smooth, but position is immediate
+  const size = useSpring(10, { stiffness: 400, damping: 25 });
+  const offset = useSpring(-5, { stiffness: 400, damping: 25 });
+
+  useEffect(() => {
+    size.set(isHovering ? 32 : 12);
+    offset.set(isHovering ? -16 : -6);
+  }, [isHovering, size, offset]);
+
+  useEffect(() => {
+    const updateMousePosition = (e: MouseEvent) => {
+      // Immediate update without state -> no lag
+      cursorX.set(e.clientX + offset.get());
+      cursorY.set(e.clientY + offset.get());
+      
+      const target = e.target as HTMLElement;
+      setIsHovering(
+        window.getComputedStyle(target).cursor === 'pointer' ||
+        target.tagName.toLowerCase() === 'a' ||
+        target.tagName.toLowerCase() === 'button' ||
+        target.closest('a') !== null ||
+        target.closest('button') !== null
+      );
+    };
+    
+    window.addEventListener('mousemove', updateMousePosition);
+    return () => window.removeEventListener('mousemove', updateMousePosition);
+  }, [cursorX, cursorY, offset]);
+
+  return (
+    <motion.div
+      className="fixed z-[9999] rounded-full pointer-events-none hidden md:block mix-blend-difference bg-white"
+      style={{
+        x: cursorX,
+        y: cursorY,
+        width: size,
+        height: size,
+      }}
+    />
   );
 };
 
@@ -451,6 +491,7 @@ export default function App() {
 
       {/* Background Interactive Element */}
       <InteractiveBackground cursorPos={cursorPos} activePage={activePage} />
+      <CustomCursor />
 
       {/* Grain / Noise Overlay for a more analogue cinematic texture */}
       <div 

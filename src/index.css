@@ -19,6 +19,12 @@
     --font-secondary: "El Messiri", "Playfair Display", ui-serif, Georgia, serif;
     --font-tertiary: "Rakkas", "Great Vibes", cursive;
   }
+
+  @media (min-width: 768px) {
+    * {
+      cursor: none !important;
+    }
+  }
 }
 
 @layer utilities {
