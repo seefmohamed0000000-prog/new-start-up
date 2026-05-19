@@ -1,6 +1,12 @@
-import { Globe, Facebook, Linkedin, Twitter, MessageCircle } from "lucide-react";
+import { Globe, Facebook, Linkedin, MessageCircle } from "lucide-react";
 import { motion, useSpring, AnimatePresence } from "motion/react";
 import React, { useEffect, useState, useRef } from "react";
+
+const XIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" aria-hidden="true" className={className} fill="currentColor">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 22.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.008 5.976H5.078z"></path>
+  </svg>
+);
 
 const SeamlessVideoLoop = ({ src }: { src: string }) => {
   const video1Ref = useRef<HTMLVideoElement>(null);
@@ -575,8 +581,8 @@ export default function App() {
           <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="text-white/40 hover:text-white hover:scale-110 transition-all duration-300">
             <Linkedin className="w-3.5 h-3.5" strokeWidth={1.5} />
           </a>
-          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter" className="text-white/40 hover:text-white hover:scale-110 transition-all duration-300">
-            <Twitter className="w-3.5 h-3.5" strokeWidth={1.5} />
+          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="X" className="text-white/40 hover:text-white hover:scale-110 transition-all duration-300">
+            <XIcon className="w-3.5 h-3.5" />
           </a>
           <a href="https://whatsapp.com" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-white/40 hover:text-white hover:scale-110 transition-all duration-300">
             <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.5} />
@@ -735,10 +741,10 @@ export default function App() {
                     </span>
                   </h2>
 
-                  <button className={`group px-10 py-4 rounded-full bg-transparent border border-teal-500/50 text-white text-[10px] md:text-xs font-medium ${lang === 'en' ? 'tracking-[0.3em]' : ''} uppercase hover:bg-teal-500 hover:text-black hover:border-teal-500 hover:scale-105 transition-all duration-500 relative z-10 overflow-hidden shadow-[0_0_40px_rgba(20,184,166,0.1)] hover:shadow-[0_0_60px_rgba(20,184,166,0.5)]`}>
-                    <span className="relative z-10">{t.contact.btn}</span>
+                  <a href="mailto:seefmohamed0000000@gmail.com" className={`group px-10 py-4 rounded-full bg-transparent border border-teal-500/50 text-white text-[10px] md:text-xs font-medium ${lang === 'en' ? 'tracking-[0.3em]' : ''} uppercase hover:bg-teal-500 hover:text-black hover:border-teal-500 hover:scale-105 transition-all duration-500 relative z-10 overflow-hidden shadow-[0_0_40px_rgba(20,184,166,0.1)] hover:shadow-[0_0_60px_rgba(20,184,166,0.5)]`}>
+                    <span className="relative z-10 block">{t.contact.btn}</span>
                     <div className="absolute inset-0 bg-gradient-to-r from-teal-400 to-teal-600 translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500 ease-out z-0"></div>
-                  </button>
+                  </a>
                 </div>
               </div>
               
