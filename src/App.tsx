@@ -317,12 +317,14 @@ export default function App() {
   const [prevIndex, setPrevIndex] = useState(0);
   const [direction, setDirection] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasStartedIntro, setHasStartedIntro] = useState(false);
   const activePage = PAGES[pageIndex];
 
   useEffect(() => {
     // Presentation intro sequence
     const timer = setTimeout(() => {
       setIsLoading(false);
+      setTimeout(() => setHasStartedIntro(true), 3500);
     }, 5500);
     return () => clearTimeout(timer);
   }, []);
@@ -506,15 +508,15 @@ export default function App() {
               e.preventDefault();
               handleNav('home');
             }}
-            initial={false}
+            initial={{ opacity: 0, y: -20, top: '48px', left: '50%', x: '-50%' }}
             animate={{
               top: activePage === 'home' ? '48px' : '24px',
               left: activePage === 'home' ? '50%' : '32px',
               x: activePage === 'home' ? '-50%' : '0%',
-              y: 0,
-              opacity: 1
+              y: !isLoading ? 0 : -20,
+              opacity: !isLoading ? 1 : 0
             }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1], delay: !hasStartedIntro ? 3 : 0 }}
             className="absolute pointer-events-auto cursor-pointer group flex items-center"
           >
             {/* We overlay the two versions and crossfade them to avoid font-loading snaps */}
@@ -593,35 +595,39 @@ export default function App() {
 
       {/* Global Bottom Info for Home */}
       <motion.div
-        className="fixed bottom-0 left-0 w-full z-40 pointer-events-none p-6 md:p-12 pb-12 md:pb-24 flex justify-between items-end gap-4"
+        className="fixed bottom-0 left-0 w-full z-40 pointer-events-none p-4 md:p-6 pb-2 md:pb-4 flex flex-col justify-center items-center gap-4"
+        initial={{ opacity: 0, y: 40 }}
         animate={{ 
-          opacity: activePage === 'home' ? 1 : 0,
-          y: activePage === 'home' ? 0 : 40,
+          opacity: (!isLoading && activePage === 'home') ? 1 : 0,
+          y: (!isLoading && activePage === 'home') ? 0 : 40,
           scale: activePage === 'home' ? 1 : 0.95
         }}
-        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1], delay: !hasStartedIntro ? 3.2 : 0 }}
       >
-        <div className={`text-[8px] sm:text-[9px] uppercase ${lang === 'en' ? 'tracking-[0.2em] md:tracking-[0.3em]' : ''} font-sans text-white/60 max-w-[200px] text-left`} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
-          <span className="text-white/40 block mb-1">{t.role.title}</span>
-          {t.role.descPart1}<br />{t.role.descPart2}
+        <div className="flex flex-col items-center justify-center gap-2">
+          <div className={`text-[10px] sm:text-[11px] uppercase ${lang === 'en' ? 'tracking-[0.3em] md:tracking-[0.4em]' : ''} font-sans text-white/80 text-center font-medium`} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+            {t.role.descPart1} {t.role.descPart2}
+          </div>
+          <div className={`flex items-center gap-3 text-[7px] sm:text-[8px] uppercase ${lang === 'en' ? 'tracking-[0.2em] md:tracking-[0.3em]' : ''} font-sans text-white/50 text-center`} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+            <span className="w-6 md:w-10 h-[1px] bg-white/20"></span>
+            <span>{t.approach.descPart1} {t.approach.descPart2}</span>
+            <span className="w-6 md:w-10 h-[1px] bg-white/20"></span>
+          </div>
         </div>
-        <div className="hidden md:flex items-center justify-center gap-6 backdrop-blur-md bg-black/20 px-6 py-3 rounded-full border border-white/10 shadow-2xl pointer-events-auto">
-          <a href="#" aria-label="Facebook" className="text-white/50 hover:text-teal-400 hover:scale-110 transition-all duration-300">
-            <Facebook className="w-4 h-4" strokeWidth={1.5} />
+
+        <div className="flex items-center justify-center gap-6 backdrop-blur-md bg-black/20 px-6 py-2.5 rounded-full border border-white/5 shadow-2xl pointer-events-auto mt-1">
+          <a href="#" aria-label="Facebook" className="text-white/40 hover:text-white hover:scale-110 transition-all duration-300">
+            <Facebook className="w-3.5 h-3.5" strokeWidth={1.5} />
           </a>
-          <a href="#" aria-label="LinkedIn" className="text-white/50 hover:text-teal-400 hover:scale-110 transition-all duration-300">
-            <Linkedin className="w-4 h-4" strokeWidth={1.5} />
+          <a href="#" aria-label="LinkedIn" className="text-white/40 hover:text-white hover:scale-110 transition-all duration-300">
+            <Linkedin className="w-3.5 h-3.5" strokeWidth={1.5} />
           </a>
-          <a href="#" aria-label="Twitter" className="text-white/50 hover:text-teal-400 hover:scale-110 transition-all duration-300">
-            <Twitter className="w-4 h-4" strokeWidth={1.5} />
+          <a href="#" aria-label="Twitter" className="text-white/40 hover:text-white hover:scale-110 transition-all duration-300">
+            <Twitter className="w-3.5 h-3.5" strokeWidth={1.5} />
           </a>
-          <a href="#" aria-label="WhatsApp" className="text-white/50 hover:text-teal-400 hover:scale-110 transition-all duration-300">
-            <MessageCircle className="w-4 h-4" strokeWidth={1.5} />
+          <a href="#" aria-label="WhatsApp" className="text-white/40 hover:text-white hover:scale-110 transition-all duration-300">
+            <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.5} />
           </a>
-        </div>
-        <div className={`text-[8px] sm:text-[9px] uppercase ${lang === 'en' ? 'tracking-[0.2em] md:tracking-[0.3em]' : ''} font-sans text-white/60 text-right max-w-[200px]`} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
-          <span className="text-white/40 block mb-1">{t.approach.title}</span>
-          {t.approach.descPart1}<br />{t.approach.descPart2}
         </div>
       </motion.div>
       
@@ -664,7 +670,7 @@ export default function App() {
                      {t.about.title}
                      <span className="w-24 h-[1px] bg-teal-500/30"></span>
                    </h2>
-                   <div className={`font-display text-4xl md:text-5xl lg:text-7xl font-light text-white ${lang === 'ar' ? 'leading-normal' : 'leading-tight'}`}>
+                   <div className={`font-display text-4xl md:text-5xl lg:text-6xl font-light text-white ${lang === 'ar' ? 'leading-normal' : 'leading-tight'}`}>
                      {t.about.headingLine1} <br/>
                      <span className={`text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-teal-500 font-medium italic ${lang === 'ar' ? 'pt-4 pb-4 px-2 block' : 'pb-2 px-2'}`}>{t.about.headingLine2}</span>
                    </div>
@@ -673,13 +679,13 @@ export default function App() {
                  {/* Right side: Content */}
                  <div className="lg:col-span-8 relative" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
                    <div className="relative z-10 space-y-8 backdrop-blur-sm bg-black/10 p-8 md:p-12 rounded-3xl border border-white/5 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)]">
-                     <p className="text-xl md:text-3xl font-light leading-relaxed text-zinc-200 font-sans">
+                     <p className="text-[17px] md:text-[22px] font-light leading-relaxed text-zinc-200 font-sans">
                        {t.about.desc1} <span className="text-white font-medium">{t.about.desc1Strong}</span> {t.about.desc1End}
                      </p>
                      
                      <div className="h-[1px] w-full bg-gradient-to-r from-white/20 to-transparent my-8"></div>
                      
-                     <p className="text-base md:text-lg font-light leading-relaxed text-zinc-400 font-sans max-w-2xl">
+                     <p className="text-sm md:text-[15px] font-light leading-relaxed text-zinc-400 font-sans max-w-2xl">
                        {t.about.desc2Part1}<span className="text-teal-400 italic">{t.about.desc2Alive}</span>{t.about.desc2Part2}
                      </p>
                      
@@ -714,12 +720,12 @@ export default function App() {
                        <span className="w-8 h-[1px] bg-teal-500"></span>
                        {t.expertise.title}
                      </h2>
-                     <h3 className="font-display text-3xl md:text-5xl font-light text-white leading-tight mb-8">
+                     <h3 className="font-display text-2xl md:text-4xl lg:text-5xl font-light text-white leading-tight mb-8">
                        {t.expertise.heading1} <br className="hidden md:block"/>
-                       <span className={`font-display italic text-5xl md:text-7xl text-teal-400 block mt-2 ${lang === 'ar' ? 'pt-6 pb-2 px-2' : ''}`}>{t.expertise.heading2}</span>
+                       <span className={`font-display italic text-4xl md:text-5xl lg:text-6xl text-teal-400 block mt-2 ${lang === 'ar' ? 'pt-6 pb-2 px-2' : ''}`}>{t.expertise.heading2}</span>
                      </h3>
                    </div>
-                   <p className="text-sm text-zinc-400 leading-relaxed font-light mt-auto max-w-sm hidden md:block">
+                   <p className="text-xs text-zinc-400 leading-relaxed font-light mt-auto max-w-sm hidden md:block">
                      {t.expertise.desc}
                    </p>
                  </div>
@@ -737,10 +743,10 @@ export default function App() {
                          0{i+1}
                        </div>
                        <div className="flex-1">
-                         <h4 className={`text-xl md:text-3xl font-display font-light mb-3 text-zinc-200 group-hover:text-white transition-colors duration-500 ${lang === 'en' ? 'tracking-wider' : ''}`}>
+                         <h4 className={`text-lg md:text-2xl font-display font-light mb-3 text-zinc-200 group-hover:text-white transition-colors duration-500 ${lang === 'en' ? 'tracking-wider' : ''}`}>
                            {item.title}
                          </h4>
-                         <p className="text-sm md:text-base text-zinc-500 font-light leading-relaxed max-w-lg group-hover:text-zinc-400 transition-colors duration-500">
+                         <p className="text-xs md:text-sm text-zinc-500 font-light leading-relaxed max-w-lg group-hover:text-zinc-400 transition-colors duration-500">
                            {item.desc}
                          </p>
                        </div>
@@ -782,12 +788,12 @@ export default function App() {
                        <div className={`w-full lg:w-1/2 flex flex-col space-y-8 ${lang === 'ar' ? 'text-right' : ''}`} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
                          <div>
                            <div className={`text-teal-400 text-xs md:text-sm font-medium ${lang === 'en' ? 'tracking-[0.2em]' : ''} uppercase mb-4`}>{project.category}</div>
-                           <h3 className="font-display text-3xl md:text-5xl font-light text-white leading-tight mb-6">
+                           <h3 className="font-display text-2xl md:text-3xl lg:text-4xl font-light text-white leading-tight mb-6">
                              {project.title}
                            </h3>
                          </div>
                          
-                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-zinc-400 font-light leading-relaxed">
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-xs text-zinc-400 font-light leading-relaxed">
                            <div className="space-y-2">
                              <h4 className={`text-white font-medium uppercase ${lang === 'en' ? 'tracking-widest' : ''} text-[10px]`}>{t.work.problemLabel}</h4>
                              <p>{project.problem}</p>
@@ -800,7 +806,7 @@ export default function App() {
                          
                          <div className="pt-6 border-t border-white/10">
                            <h4 className={`text-teal-500 font-medium uppercase ${lang === 'en' ? 'tracking-widest' : ''} text-[10px] mb-2`}>{t.work.impactLabel}</h4>
-                           <p className="text-zinc-200">{project.impact}</p>
+                           <p className="text-xs text-zinc-200">{project.impact}</p>
                          </div>
                        </div>
                      </div>
@@ -827,15 +833,15 @@ export default function App() {
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40vw] h-[40vw] min-w-[400px] border border-white/5 rounded-full animate-[spin_60s_linear_infinite_reverse] pointer-events-none"></div>
 
                   <h2 className={`flex flex-col items-center justify-center gap-2 mix-blend-plus-lighter relative z-10 w-full text-center ${lang === 'ar' ? 'mb-4 md:mb-6' : 'mb-8 md:mb-12'}`}>
-                    <span className={`text-sm md:text-lg font-sans font-light uppercase text-zinc-400 blur-[0.5px] relative z-20 ${lang === 'en' ? 'tracking-[0.8em] mb-2 md:mb-4' : '-mb-6 md:-mb-10'}`}>
+                    <span className={`text-xs md:text-sm font-sans font-light uppercase text-zinc-400 blur-[0.5px] relative z-20 ${lang === 'en' ? 'tracking-[0.8em] mb-2 md:mb-4' : '-mb-6 md:-mb-10'}`}>
                       {t.contact.letThe}
                     </span>
-                    <span className={`font-magic text-[80px] sm:text-[120px] md:text-[160px] tracking-normal text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-teal-500 drop-shadow-2xl px-4 pb-8 md:pb-12 ${lang === 'ar' ? 'leading-normal pt-12 md:pt-20 block' : 'leading-[0.8] mt-4 md:-mt-6'}`}>
+                    <span className={`font-magic text-[60px] sm:text-[80px] md:text-[100px] tracking-normal text-transparent bg-clip-text bg-gradient-to-r from-teal-200 to-teal-500 drop-shadow-2xl px-4 pb-8 md:pb-12 ${lang === 'ar' ? 'leading-normal pt-12 md:pt-20 block' : 'leading-[0.8] mt-4 md:-mt-6'}`}>
                       {t.contact.magicBegin}
                     </span>
                   </h2>
 
-                  <button className={`group px-12 py-5 rounded-full bg-transparent border border-teal-500/50 text-white text-xs md:text-sm font-medium ${lang === 'en' ? 'tracking-[0.3em]' : ''} uppercase hover:bg-teal-500 hover:text-black hover:border-teal-500 hover:scale-105 transition-all duration-500 relative z-10 overflow-hidden shadow-[0_0_40px_rgba(20,184,166,0.1)] hover:shadow-[0_0_60px_rgba(20,184,166,0.5)]`}>
+                  <button className={`group px-10 py-4 rounded-full bg-transparent border border-teal-500/50 text-white text-[10px] md:text-xs font-medium ${lang === 'en' ? 'tracking-[0.3em]' : ''} uppercase hover:bg-teal-500 hover:text-black hover:border-teal-500 hover:scale-105 transition-all duration-500 relative z-10 overflow-hidden shadow-[0_0_40px_rgba(20,184,166,0.1)] hover:shadow-[0_0_60px_rgba(20,184,166,0.5)]`}>
                     <span className="relative z-10">{t.contact.btn}</span>
                     <div className="absolute inset-0 bg-gradient-to-r from-teal-400 to-teal-600 translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500 ease-out z-0"></div>
                   </button>
@@ -881,7 +887,7 @@ export default function App() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 1, delay: 0.2 }}
-                    className={`font-display text-4xl md:text-5xl lg:text-6xl font-light text-white uppercase ${lang === 'en' ? 'tracking-[0.2em] md:tracking-[0.4em]' : ''} mb-6 md:mb-8 blend-difference px-4 text-center`}
+                    className={`font-display text-3xl md:text-4xl lg:text-5xl font-light text-white uppercase ${lang === 'en' ? 'tracking-[0.2em] md:tracking-[0.4em]' : ''} mb-6 md:mb-8 blend-difference px-4 text-center`}
                   >
                     {t.thanks.title}
                   </motion.h2>
@@ -892,10 +898,10 @@ export default function App() {
                     transition={{ duration: 1, delay: 0.8 }}
                     className="flex flex-col items-center gap-1 md:gap-2"
                   >
-                     <p className={`text-sm md:text-base lg:text-lg font-sans font-light text-zinc-300 ${lang === 'en' ? 'tracking-[0.1em]' : ''}`}>
+                     <p className={`text-sm md:text-base font-sans font-light text-zinc-300 ${lang === 'en' ? 'tracking-[0.1em]' : ''}`}>
                        {t.thanks.message}
                      </p>
-                     <p className={`text-xs md:text-sm font-sans font-medium text-[#5C7C8A] ${lang === 'en' ? 'tracking-[0.05em]' : ''} mt-2`}>
+                     <p className={`text-[10px] md:text-xs font-sans font-medium text-[#5C7C8A] ${lang === 'en' ? 'tracking-[0.05em]' : ''} mt-2`}>
                        {t.thanks.subMessage}
                      </p>
                   </motion.div>
