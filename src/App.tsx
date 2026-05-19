@@ -1,6 +1,6 @@
 import { Globe, Facebook, Linkedin, Twitter, MessageCircle } from "lucide-react";
 import { motion, useSpring, AnimatePresence } from "motion/react";
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 const SeamlessVideoLoop = ({ src }: { src: string }) => {
   const video1Ref = useRef<HTMLVideoElement>(null);
@@ -161,14 +161,13 @@ const InteractiveBackground = ({ cursorPos, activePage }: { cursorPos: { x: numb
   );
 };
 
-const PAGES = ['home', 'about', 'expertise', 'work', 'contact', 'thanks'];
+const PAGES = ['home', 'about', 'expertise', 'contact', 'thanks'];
 
 const content = {
   en: {
     nav: {
       about: "About me",
       expertise: "Expertise",
-      work: "Work",
       contact: "Contact"
     },
     role: { title: "Role", descPart1: "Graphic", descPart2: "Designer" },
@@ -196,37 +195,17 @@ const content = {
          { title: 'Visual Identity', desc: 'Crafting unique structural design systems that stand out in the dark.' }
       ]
     },
-    work: {
-      title: "Selected Work",
-      problemLabel: "The Problem",
-      solutionLabel: "The Solution",
-      impactLabel: "Impact",
-      items: [
-         {
-           title: "Eco-Vision",
-           category: "Identity & Motion",
-           problem: "A sustainable tech startup struggling to stand out with generic branding.",
-           solution: "Developed a structural, tech-forward identity with cinematic 3D motion graphics.",
-           impact: "Increased engagement by 300% and aided in securing $2M seed funding.",
-           image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop"
-         },
-         {
-           title: "Lumina",
-           category: "UI/UX Design",
-           problem: "A complex fintech app with low retention due to a confusing, data-heavy layout.",
-           solution: "Redesigned the dashboard using structural aesthetics and meaningful micro-interactions.",
-           impact: "Boosted daily active users by 45% and reduced support tickets.",
-           image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2670&auto=format&fit=crop"
-         }
-      ]
-    },
     contact: {
       letThe: "Let the",
       magicBegin: "magic begin",
       btn: "Get in touch",
       avail: "Available for",
       freelance: "Freelance opportunities",
-      platforms: ['Instagram', 'Behance', 'LinkedIn'] 
+      platforms: [
+        {name: 'Instagram', url: 'https://instagram.com'}, 
+        {name: 'Behance', url: 'https://behance.net'}, 
+        {name: 'LinkedIn', url: 'https://linkedin.com'}
+      ] 
     },
     thanks: {
       title: "THANK YOU",
@@ -239,7 +218,6 @@ const content = {
     nav: {
       about: "من أنا",
       expertise: "الخبرات",
-      work: "المشاريع",
       contact: "تواصل معي"
     },
     role: { title: "الدور", descPart1: "مصمم", descPart2: "جرافيك" },
@@ -267,37 +245,17 @@ const content = {
          { title: 'الهوية البصرية', desc: 'ابتكار أنظمة هيكلية فريدة تبرز هويتك في وسط الزحام.' }
       ]
     },
-    work: {
-      title: "أعمال مختارة",
-      problemLabel: "المشكلة",
-      solutionLabel: "الحل",
-      impactLabel: "التأثير",
-      items: [
-         {
-           title: "إيكو فيجن",
-           category: "هوية بصرية وموشن",
-           problem: "شركة تقنية ناشئة مستدامة تعاني من التميز بهوية علامة تجارية تقليدية.",
-           solution: "تطوير هوية هيكلية وتقنية مبتكرة مع رسوم متحركة سينمائية ثلاثية الأبعاد.",
-           impact: "زيادة التفاعل بنسبة ٣٠٠٪ والمساهمة في تأمين تمويل بقيمة ٢ مليون دولار.",
-           image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop"
-         },
-         {
-           title: "لومينا",
-           category: "تصميم واجهة المستخدم",
-           problem: "تطبيق تقنية مالية معقد يعاني من انخفاض احتفاظ المستخدمين بسبب واجهة مليئة بالبيانات.",
-           solution: "إعادة تصميم واجهة المستخدم باستخدام الجماليات الهيكلية والتفاعلات الدقيقة المفيدة.",
-           impact: "زيادة المستخدمين النشطين يوميًا بنسبة ٤٥٪ وتقليل طلبات الدعم.",
-           image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2670&auto=format&fit=crop"
-         }
-      ]
-    },
     contact: {
       letThe: "لتبدأ",
       magicBegin: "السحر",
       btn: "تواصل معي",
       avail: "متاح لـ",
       freelance: "فرص العمل الحر",
-      platforms: ['انستجرام', 'بيهانس', 'لينكد إن'] 
+      platforms: [
+        {name: 'انستجرام', url: 'https://instagram.com'}, 
+        {name: 'بيهانس', url: 'https://behance.net'}, 
+        {name: 'لينكد إن', url: 'https://linkedin.com'}
+      ] 
     },
     thanks: {
       title: "شكرًا لك",
@@ -525,13 +483,13 @@ export default function App() {
               animate={{ opacity: activePage === 'home' ? 1 : 0, scale: activePage === 'home' ? 1 : 0.8 }}
               transition={{ duration: 0.8, ease: "easeInOut" }}
             >
-              <h1 className="text-[12px] sm:text-[14px] font-sans tracking-[0.6em] text-white/80 uppercase whitespace-nowrap">
+              <h1 className={`text-[12px] sm:text-[14px] font-sans text-white/80 uppercase whitespace-nowrap ${lang === 'en' ? 'tracking-[0.6em] pl-[0.6em]' : ''}`}>
                 Seif Mohamed
               </h1>
             </motion.div>
 
             <motion.div
-              className="flex items-center whitespace-nowrap"
+              className="flex items-center whitespace-nowrap pl-[0.15em]"
               animate={{ opacity: activePage === 'home' ? 0 : 1, scale: activePage === 'home' ? 1.1 : 1 }}
               transition={{ duration: 0.8, ease: "easeInOut" }}
             >
@@ -577,11 +535,6 @@ export default function App() {
                <span className={`absolute -bottom-1 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-teal-400/80 to-transparent transform origin-center transition-all duration-500 ease-out ${activePage === 'expertise' ? 'scale-x-100 opacity-100' : 'scale-x-0 opacity-0 group-hover:scale-x-75 group-hover:opacity-100'}`}></span>
              </button>
              <span className="w-[1px] h-2.5 bg-white/20 relative z-10"></span>
-             <button onClick={() => handleNav('work')} className={`group ${activePage === 'work' ? 'text-teal-400' : 'text-zinc-300'} hover:text-teal-300 text-[10px] font-medium ${lang === 'en' ? 'tracking-[0.2em]' : ''} uppercase transition-colors duration-300 relative z-10 whitespace-nowrap`}>
-               {t.nav.work}
-               <span className={`absolute -bottom-1 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-teal-400/80 to-transparent transform origin-center transition-all duration-500 ease-out ${activePage === 'work' ? 'scale-x-100 opacity-100' : 'scale-x-0 opacity-0 group-hover:scale-x-75 group-hover:opacity-100'}`}></span>
-             </button>
-             <span className="w-[1px] h-2.5 bg-white/20 relative z-10"></span>
              <button onClick={() => handleNav('contact')} className={`group ${activePage === 'contact' ? 'text-teal-400' : 'text-zinc-300'} hover:text-teal-300 text-[10px] font-medium ${lang === 'en' ? 'tracking-[0.2em]' : ''} uppercase transition-colors duration-300 relative z-10 whitespace-nowrap`}>
                {t.nav.contact}
                <span className={`absolute -bottom-1 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-teal-400/80 to-transparent transform origin-center transition-all duration-500 ease-out ${activePage === 'contact' ? 'scale-x-100 opacity-100' : 'scale-x-0 opacity-0 group-hover:scale-x-75 group-hover:opacity-100'}`}></span>
@@ -605,27 +558,27 @@ export default function App() {
         transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1], delay: !hasStartedIntro ? 3.2 : 0 }}
       >
         <div className="flex flex-col items-center justify-center gap-2">
-          <div className={`text-[10px] sm:text-[11px] uppercase ${lang === 'en' ? 'tracking-[0.3em] md:tracking-[0.4em]' : ''} font-sans text-white/80 text-center font-medium`} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+          <div className={`text-[10px] sm:text-[11px] uppercase ${lang === 'en' ? 'tracking-[0.3em] md:tracking-[0.4em] pl-[0.3em] md:pl-[0.4em]' : ''} font-sans text-white/80 text-center font-medium`} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
             {t.role.descPart1} {t.role.descPart2}
           </div>
-          <div className={`flex items-center gap-3 text-[7px] sm:text-[8px] uppercase ${lang === 'en' ? 'tracking-[0.2em] md:tracking-[0.3em]' : ''} font-sans text-white/50 text-center`} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+          <div className={`flex items-center gap-3 text-[7px] sm:text-[8px] uppercase font-sans text-white/50 text-center`} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
             <span className="w-6 md:w-10 h-[1px] bg-white/20"></span>
-            <span>{t.approach.descPart1} {t.approach.descPart2}</span>
+            <span className={`${lang === 'en' ? 'tracking-[0.2em] md:tracking-[0.3em] pl-[0.2em] md:pl-[0.3em]' : ''}`}>{t.approach.descPart1} {t.approach.descPart2}</span>
             <span className="w-6 md:w-10 h-[1px] bg-white/20"></span>
           </div>
         </div>
 
         <div className="flex items-center justify-center gap-6 backdrop-blur-md bg-black/20 px-6 py-2.5 rounded-full border border-white/5 shadow-2xl pointer-events-auto mt-1">
-          <a href="#" aria-label="Facebook" className="text-white/40 hover:text-white hover:scale-110 transition-all duration-300">
+          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-white/40 hover:text-white hover:scale-110 transition-all duration-300">
             <Facebook className="w-3.5 h-3.5" strokeWidth={1.5} />
           </a>
-          <a href="#" aria-label="LinkedIn" className="text-white/40 hover:text-white hover:scale-110 transition-all duration-300">
+          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="text-white/40 hover:text-white hover:scale-110 transition-all duration-300">
             <Linkedin className="w-3.5 h-3.5" strokeWidth={1.5} />
           </a>
-          <a href="#" aria-label="Twitter" className="text-white/40 hover:text-white hover:scale-110 transition-all duration-300">
+          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter" className="text-white/40 hover:text-white hover:scale-110 transition-all duration-300">
             <Twitter className="w-3.5 h-3.5" strokeWidth={1.5} />
           </a>
-          <a href="#" aria-label="WhatsApp" className="text-white/40 hover:text-white hover:scale-110 transition-all duration-300">
+          <a href="https://whatsapp.com" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-white/40 hover:text-white hover:scale-110 transition-all duration-300">
             <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.5} />
           </a>
         </div>
@@ -757,65 +710,6 @@ export default function App() {
             </motion.section>
           )}
 
-          {/* Work Section */}
-          {activePage === 'work' && (
-            <motion.section 
-              key="page-work"
-              custom={transitionData}
-              variants={pageVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              className="absolute inset-0 pt-32 pb-12 px-6 md:px-24 z-20 overflow-y-auto no-scrollbar pointer-events-auto"
-            >
-              <div className="max-w-7xl mx-auto w-full pb-32">
-                 <h2 className={`text-sm md:text-base font-medium ${lang === 'en' ? 'tracking-[0.4em]' : ''} uppercase text-teal-500 mb-16 flex items-center gap-4`}>
-                   <span className="w-8 h-[1px] bg-teal-500"></span>
-                   {t.work.title}
-                   <span className="w-24 h-[1px] bg-teal-500/30"></span>
-                 </h2>
-
-                 <div className="flex flex-col gap-24 lg:gap-32">
-                   {t.work.items.map((project, i) => (
-                     <div key={project.title} className={`flex flex-col lg:flex-row gap-8 lg:gap-16 items-center ${i % 2 !== 0 ? 'lg:flex-row-reverse' : ''}`}>
-                       {/* Project Image */}
-                       <div className="w-full lg:w-1/2 relative group rounded-3xl overflow-hidden aspect-[4/3] bg-white/5 border border-white/10 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)]">
-                         <div className="absolute inset-0 bg-teal-500/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"></div>
-                         <img src={project.image} alt={project.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                       </div>
-                       
-                       {/* Project Details */}
-                       <div className={`w-full lg:w-1/2 flex flex-col space-y-8 ${lang === 'ar' ? 'text-right' : ''}`} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
-                         <div>
-                           <div className={`text-teal-400 text-xs md:text-sm font-medium ${lang === 'en' ? 'tracking-[0.2em]' : ''} uppercase mb-4`}>{project.category}</div>
-                           <h3 className="font-display text-2xl md:text-3xl lg:text-4xl font-light text-white leading-tight mb-6">
-                             {project.title}
-                           </h3>
-                         </div>
-                         
-                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-xs text-zinc-400 font-light leading-relaxed">
-                           <div className="space-y-2">
-                             <h4 className={`text-white font-medium uppercase ${lang === 'en' ? 'tracking-widest' : ''} text-[10px]`}>{t.work.problemLabel}</h4>
-                             <p>{project.problem}</p>
-                           </div>
-                           <div className="space-y-2">
-                             <h4 className={`text-white font-medium uppercase ${lang === 'en' ? 'tracking-widest' : ''} text-[10px]`}>{t.work.solutionLabel}</h4>
-                             <p>{project.solution}</p>
-                           </div>
-                         </div>
-                         
-                         <div className="pt-6 border-t border-white/10">
-                           <h4 className={`text-teal-500 font-medium uppercase ${lang === 'en' ? 'tracking-widest' : ''} text-[10px] mb-2`}>{t.work.impactLabel}</h4>
-                           <p className="text-xs text-zinc-200">{project.impact}</p>
-                         </div>
-                       </div>
-                     </div>
-                   ))}
-                 </div>
-              </div>
-            </motion.section>
-          )}
-
           {/* Contact Section */}
           {activePage === 'contact' && (
             <motion.section 
@@ -856,8 +750,8 @@ export default function App() {
                 
                 <div className="flex gap-8 relative z-10 min-w-[200px] sm:justify-end">
                   {t.contact.platforms.map((platform) => (
-                    <a key={platform} href="#" className="hover:text-teal-400 transition-colors duration-300 relative group flex items-center">
-                      {platform}
+                    <a key={platform.name} href={platform.url} target="_blank" rel="noopener noreferrer" className="hover:text-teal-400 transition-colors duration-300 relative group flex items-center">
+                      {platform.name}
                       <span className="absolute -bottom-2 left-0 w-0 h-[1px] bg-teal-400 transition-all duration-300 group-hover:w-full"></span>
                     </a>
                   ))}
