@@ -1,6 +1,7 @@
 import { Globe, Facebook, Linkedin, MessageCircle } from "lucide-react";
 import { motion, useSpring, AnimatePresence, useMotionValue } from "motion/react";
 import React, { useEffect, useState, useRef } from "react";
+import { LampContainer } from "./components/ui/lamp";
 
 const XIcon = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" aria-hidden="true" className={className} fill="currentColor">
@@ -440,51 +441,57 @@ export default function App() {
         {isLoading && (
           <motion.div
             initial={{ opacity: 1 }}
-            exit={{ opacity: 0, filter: "blur(10px)" }}
+            exit={{ opacity: 0, filter: "blur(10px)", transition: { duration: 1.5, ease: "easeInOut", delay: 0.6 } }}
             transition={{ duration: 1.5, ease: "easeInOut" }}
             className="fixed inset-0 z-[999] bg-[#050505] flex flex-col items-center justify-center pointer-events-none"
           >
-            <div className="flex flex-col items-center justify-center text-center">
-              <div className="overflow-hidden mb-3">
-                <motion.h1 
-                  initial={{ y: "100%", opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-                  className="font-display text-lg md:text-xl lg:text-2xl font-light text-white tracking-[0.3em] md:tracking-[0.5em] text-center uppercase pl-[0.3em] md:pl-[0.5em]"
+            <LampContainer>
+              <div className="flex flex-col items-center justify-center text-center relative z-50">
+                <div className="overflow-hidden mb-3">
+                  <motion.h1 
+                    initial={{ y: "100%", opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ opacity: 0, transition: { duration: 0.5 } }}
+                    transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+                    className="font-display text-lg md:text-xl lg:text-2xl font-light text-white tracking-[0.3em] md:tracking-[0.5em] text-center uppercase pl-[0.3em] md:pl-[0.5em]"
+                  >
+                    SEIF <span className="text-zinc-600">MOHAMED</span>
+                  </motion.h1>
+                </div>
+                <div className="overflow-hidden">
+                  <motion.p
+                    initial={{ y: "-100%", opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ opacity: 0, transition: { duration: 0.5 } }}
+                    transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.8 }}
+                    className="text-[7px] md:text-[8px] text-[#5C7C8A] uppercase tracking-[0.4em] md:tracking-[0.6em] font-medium text-center pl-[0.4em] md:pl-[0.6em]"
+                  >
+                    {t.role.descPart1} {t.role.descPart2}
+                  </motion.p>
+                </div>
+                
+                <motion.div 
+                  initial={{ scaleX: 0, opacity: 0 }}
+                  animate={{ scaleX: 1, opacity: 1 }}
+                  exit={{ opacity: 0, transition: { duration: 0.5 } }}
+                  transition={{ duration: 1.5, ease: "easeInOut", delay: 1.5 }}
+                  className="w-full max-w-[80px] md:max-w-[120px] h-[1px] bg-gradient-to-r from-transparent via-[#5C7C8A]/40 to-transparent mt-8 mb-6 origin-center"
+                />
+                
+                <motion.div
+                   initial={{ opacity: 0 }}
+                   animate={{ opacity: 1 }}
+                   exit={{ opacity: 0, transition: { duration: 0.5 } }}
+                   transition={{ duration: 1, ease: 'easeInOut', delay: 2.2 }}
+                   className="flex flex-col items-center"
                 >
-                  SEIF <span className="text-zinc-600">MOHAMED</span>
-                </motion.h1>
+                    <div className="relative flex items-center justify-center">
+                      <div className="absolute w-6 h-6 border-[1px] border-[#5C7C8A]/20 rounded-full"></div>
+                      <div className="w-6 h-6 border-[1px] border-transparent border-t-[#5C7C8A] rounded-full animate-spin"></div>
+                    </div>
+                </motion.div>
               </div>
-              <div className="overflow-hidden">
-                <motion.p
-                  initial={{ y: "-100%", opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.8 }}
-                  className="text-[7px] md:text-[8px] text-[#5C7C8A] uppercase tracking-[0.4em] md:tracking-[0.6em] font-medium text-center pl-[0.4em] md:pl-[0.6em]"
-                >
-                  {t.role.descPart1} {t.role.descPart2}
-                </motion.p>
-              </div>
-              
-              <motion.div 
-                initial={{ scaleX: 0, opacity: 0 }}
-                animate={{ scaleX: 1, opacity: 1 }}
-                transition={{ duration: 1.5, ease: "easeInOut", delay: 1.5 }}
-                className="w-full max-w-[80px] md:max-w-[120px] h-[1px] bg-gradient-to-r from-transparent via-[#5C7C8A]/40 to-transparent mt-8 mb-6 origin-center"
-              />
-              
-              <motion.div
-                 initial={{ opacity: 0 }}
-                 animate={{ opacity: 1 }}
-                 transition={{ duration: 1, ease: 'easeInOut', delay: 2.2 }}
-                 className="flex flex-col items-center"
-              >
-                  <div className="relative flex items-center justify-center">
-                    <div className="absolute w-6 h-6 border-[1px] border-[#5C7C8A]/20 rounded-full"></div>
-                    <div className="w-6 h-6 border-[1px] border-transparent border-t-[#5C7C8A] rounded-full animate-spin"></div>
-                  </div>
-              </motion.div>
-            </div>
+            </LampContainer>
           </motion.div>
         )}
       </AnimatePresence>
