@@ -522,19 +522,19 @@ export default function App() {
             }}
             initial={{ opacity: 0, y: -20, top: '48px', left: '50%', x: '-50%' }}
             animate={{
-              top: activePage === 'home' ? '48px' : '24px',
-              left: activePage === 'home' ? '50%' : '32px',
-              x: activePage === 'home' ? '-50%' : '0%',
+              top: activePage === 'home' ? '48px' : activePage === 'thanks' ? '80px' : '24px',
+              left: activePage === 'home' || activePage === 'thanks' ? '50%' : '32px',
+              x: activePage === 'home' || activePage === 'thanks' ? '-50%' : '0%',
               y: !isLoading ? 0 : -20,
               opacity: !isLoading ? 1 : 0
             }}
             transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1], delay: !hasStartedIntro ? 3 : 0 }}
-            className="absolute pointer-events-auto cursor-pointer group flex items-center"
+            className={`absolute pointer-events-auto cursor-pointer group flex items-center ${activePage === 'thanks' ? 'pointer-events-none' : ''}`}
           >
             {/* We overlay the two versions and crossfade them to avoid font-loading snaps */}
             <motion.div
               className="absolute inset-0 flex items-center justify-center whitespace-nowrap"
-              animate={{ opacity: activePage === 'home' ? 1 : 0, scale: activePage === 'home' ? 1 : 0.8 }}
+              animate={{ opacity: activePage === 'home' || activePage === 'thanks' ? 1 : 0, scale: activePage === 'home' ? 1 : activePage === 'thanks' ? 0.85 : 0.8 }}
               transition={{ duration: 0.8, ease: "easeInOut" }}
             >
               <h1 className={`text-[12px] sm:text-[14px] font-sans text-white/80 uppercase whitespace-nowrap ${lang === 'en' ? 'tracking-[0.6em] pl-[0.6em]' : ''}`}>
@@ -544,7 +544,7 @@ export default function App() {
 
             <motion.div
               className="flex items-center whitespace-nowrap pl-[0.15em]"
-              animate={{ opacity: activePage === 'home' ? 0 : 1, scale: activePage === 'home' ? 1.1 : 1 }}
+              animate={{ opacity: activePage === 'home' || activePage === 'thanks' ? 0 : 1, scale: activePage === 'home' ? 1.1 : activePage === 'thanks' ? 1.1 : 1 }}
               transition={{ duration: 0.8, ease: "easeInOut" }}
             >
               <span className="text-xl md:text-2xl font-display tracking-[0.15em] font-semibold text-white group-hover:text-teal-500 transition-colors duration-500">Seif</span>
@@ -568,12 +568,12 @@ export default function App() {
           {/* Liquid Glass Nav Pill - Center */}
           <motion.div 
              animate={{ 
-               opacity: activePage === 'home' ? 0 : 1, 
-               y: activePage === 'home' ? -20 : 0,
-               scale: activePage === 'home' ? 0.95 : 1
+               opacity: activePage === 'home' || activePage === 'thanks' ? 0 : 1, 
+               y: activePage === 'home' ? -20 : activePage === 'thanks' ? -40 : 0,
+               scale: activePage === 'home' || activePage === 'thanks' ? 0.95 : 1
              }}
-             transition={{ duration: 0.8, delay: activePage === 'home' ? 0 : 0.4, ease: [0.16, 1, 0.3, 1] }}
-             className={`hidden md:flex items-center gap-5 px-6 py-2.5 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)] relative overflow-hidden group/nav ${activePage === 'home' ? 'pointer-events-none' : 'pointer-events-auto'}`}
+             transition={{ duration: 0.8, delay: (activePage === 'home' || activePage === 'thanks') ? 0 : 0.4, ease: [0.16, 1, 0.3, 1] }}
+             className={`hidden md:flex items-center gap-5 px-6 py-2.5 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)] relative overflow-hidden group/nav ${activePage === 'home' || activePage === 'thanks' ? 'pointer-events-none' : 'pointer-events-auto'}`}
           >
              {/* Inner glass highlight gradient */}
              <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent opacity-20 pointer-events-none"></div>
