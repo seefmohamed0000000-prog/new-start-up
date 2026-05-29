@@ -166,50 +166,53 @@ const InteractiveBackground = ({ cursorX, cursorY, activePage }: { cursorX: any,
 };
 
 const CustomCursor = () => {
-  const [isHovering, setIsHovering] = useState(false);
-  
-  const cursorX = useMotionValue(-100);
-  const cursorY = useMotionValue(-100);
-  
-  // Only spring the size, position is exactly mapped to mouse
-  const size = useSpring(12, { stiffness: 600, damping: 30 });
+  const cursorRef = useRef<HTMLDivElement>(null);
+  const size = useSpring(12, { stiffness: 800, damping: 35 });
 
   useEffect(() => {
-    size.set(isHovering ? 32 : 12);
-  }, [isHovering, size]);
-
-  useEffect(() => {
-    const updateMousePosition = (e: MouseEvent) => {
-      // Immediate update without math
-      cursorX.set(e.clientX);
-      cursorY.set(e.clientY);
-      
+    const moveMouse = (e: MouseEvent) => {
+      if (cursorRef.current) {
+        cursorRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate(-50%, -50%)`;
+      }
+    };
+    
+    const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      setIsHovering(
+      if (!target) return;
+      if (
         window.getComputedStyle(target).cursor === 'pointer' ||
         target.tagName.toLowerCase() === 'a' ||
         target.tagName.toLowerCase() === 'button' ||
         target.closest('a') !== null ||
-        target.closest('button') !== null
-      );
+        target.closest('button') !== null ||
+        target.classList.contains('cursor-pointer')
+      ) {
+        size.set(32);
+      } else {
+        size.set(12);
+      }
     };
+
+    window.addEventListener('mousemove', moveMouse, { passive: true });
+    window.addEventListener('mouseover', handleMouseOver, { passive: true });
     
-    window.addEventListener('mousemove', updateMousePosition);
-    return () => window.removeEventListener('mousemove', updateMousePosition);
-  }, [cursorX, cursorY]);
+    return () => {
+      window.removeEventListener('mousemove', moveMouse);
+      window.removeEventListener('mouseover', handleMouseOver);
+    };
+  }, [size]);
 
   return (
-    <motion.div
-      className="fixed top-0 left-0 z-[9999] rounded-full pointer-events-none hidden md:block mix-blend-difference bg-white"
-      style={{
-        x: cursorX,
-        y: cursorY,
-        translateX: "-50%",
-        translateY: "-50%",
-        width: size,
-        height: size,
-      }}
-    />
+    <div
+      ref={cursorRef}
+      className="fixed top-0 left-0 z-[9999] pointer-events-none hidden md:flex items-center justify-center mix-blend-difference"
+      style={{ willChange: 'transform' }}
+    >
+      <motion.div
+        className="rounded-full bg-white"
+        style={{ width: size, height: size }}
+      />
+    </div>
   );
 };
 
@@ -429,11 +432,13 @@ export default function App() {
            setDirection(1);
            setPrevIndex(pageIndex);
            setPageIndex(p => p + 1);
+           window.history.replaceState(null, '', '#' + PAGES[pageIndex + 1]);
            lastScrollTime.current = now;
         } else if (e.deltaY < 0 && pageIndex > 0) {
            setDirection(-1);
            setPrevIndex(pageIndex);
            setPageIndex(p => p - 1);
+           window.history.replaceState(null, '', '#' + PAGES[pageIndex - 1]);
            lastScrollTime.current = now;
         }
       }
@@ -929,7 +934,11 @@ export default function App() {
               exit="exit"
               className="absolute inset-0 z-20 min-h-screen overflow-y-auto overflow-x-hidden"
             >
-              <WorkDetail id={activePage} lang={lang} onBack={() => handleNav('expertise')} />
+              <WorkDetail id={activePage} lang={lang} onBack={() => {
+                // If history is longer than 2, it's safe to pop, but handleNav handles the internal state safely
+                // We push 'expertise' to ensure we land exactly there
+                handleNav('expertise');
+              }} />
             </motion.section>
           )}
         </AnimatePresence>
