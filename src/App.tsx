@@ -317,12 +317,15 @@ const content = {
 };
 
 export default function App() {
+  const initialHash = window.location.hash.slice(1);
+  const initialPageIndex = PAGES.includes(initialHash) ? PAGES.indexOf(initialHash) : 0;
+
   const [lang, setLang] = useState<'en' | 'ar'>('en');
   const t = content[lang];
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [cursorPos, setCursorPos] = useState({ x: -1000, y: -1000 });
-  const [pageIndex, setPageIndex] = useState(0);
-  const [prevIndex, setPrevIndex] = useState(0);
+  const [pageIndex, setPageIndex] = useState(initialPageIndex);
+  const [prevIndex, setPrevIndex] = useState(initialPageIndex);
   const [direction, setDirection] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [hasStartedIntro, setHasStartedIntro] = useState(false);
@@ -337,12 +340,39 @@ export default function App() {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    // Initial replaceState if no hash exists
+    if (!window.location.hash) {
+      window.history.replaceState(null, '', '#' + PAGES[initialPageIndex]);
+    }
+    
+    // Handle browser back/forward buttons
+    const handlePopState = () => {
+      const hash = window.location.hash.slice(1) || 'home';
+      const targetIdx = PAGES.indexOf(hash);
+      if (targetIdx !== -1) {
+        setPageIndex((current) => {
+          if (targetIdx !== current) {
+            setDirection(targetIdx > current ? 1 : -1);
+            setPrevIndex(current);
+            return targetIdx;
+          }
+          return current;
+        });
+      }
+    };
+    
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   const handleNav = (targetPage: string) => {
     const targetIdx = PAGES.indexOf(targetPage);
-    if (targetIdx !== pageIndex) {
+    if (targetIdx !== -1 && targetIdx !== pageIndex) {
       setDirection(targetIdx > pageIndex ? 1 : -1);
       setPrevIndex(pageIndex);
       setPageIndex(targetIdx);
+      window.history.pushState(null, '', `#${targetPage}`);
     }
   };
 

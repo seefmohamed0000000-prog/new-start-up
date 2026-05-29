@@ -13,11 +13,17 @@ export const WorkDetail: React.FC<WorkDetailProps> = ({ id, lang, onBack }) => {
   
   if (id === 'social_media') {
     return (
-      <div className="w-full h-full pt-32 pb-24 px-6 md:px-24 flex flex-col relative z-20" dir={isAr ? 'rtl' : 'ltr'}>
-        <button onClick={onBack} className={`mb-12 flex items-center gap-2 text-xs uppercase tracking-widest text-zinc-400 hover:text-white transition-colors duration-300 w-fit ${isAr ? 'mr-0 ml-auto' : 'ml-0 mr-auto'}`}>
-          <ArrowLeft className={`w-4 h-4 ${isAr ? 'rotate-180' : ''}`} />
-          <span>{isAr ? 'العودة للخبرات' : 'Back to Expertise'}</span>
-        </button>
+      <div className="w-full min-h-screen pt-16 md:pt-20 pb-24 px-6 md:px-24 flex flex-col relative z-20 bg-zinc-950" dir={isAr ? 'rtl' : 'ltr'}>
+        <div className="absolute inset-0 pointer-events-none -z-10" style={{ backgroundImage: 'radial-gradient(circle at center, rgba(255,255,255,0.03) 1px, transparent 1px)', backgroundSize: '32px 32px' }}></div>
+        <div className="absolute top-0 right-0 w-[50vw] h-[50vw] bg-purple-900/10 blur-[150px] rounded-full pointer-events-none mix-blend-screen -z-10"></div>
+        <div className="absolute bottom-0 left-0 w-[40vw] h-[40vw] bg-cyan-900/10 blur-[120px] rounded-full pointer-events-none mix-blend-screen -z-10"></div>
+
+        <div className={`sticky top-6 md:top-10 z-50 mb-20 md:mb-32 w-fit ${isAr ? 'mr-0 ml-auto' : 'ml-0 mr-auto'}`}>
+          <button onClick={onBack} className={`flex items-center gap-2 text-xs uppercase tracking-widest text-zinc-400 hover:text-white transition-colors duration-300 backdrop-blur-md px-4 py-2.5 rounded-full border border-white/5 bg-zinc-900/50 hover:bg-zinc-800/80`}>
+            <ArrowLeft className={`w-4 h-4 ${isAr ? 'rotate-180' : ''}`} />
+            <span>{isAr ? 'العودة للخبرات' : 'Back to Expertise'}</span>
+          </button>
+        </div>
         
         <h1 className="text-4xl md:text-7xl font-display font-light text-white mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-cyan-400">
           {isAr ? 'سوشيال ميديا وحملات رقمية' : 'Strategic Social Campaigns'}
@@ -49,11 +55,16 @@ export const WorkDetail: React.FC<WorkDetailProps> = ({ id, lang, onBack }) => {
 
   if (id === 'art_direction') {
     return (
-      <div className="w-full h-full pt-32 pb-24 px-6 md:px-24 flex flex-col relative z-20" dir={isAr ? 'rtl' : 'ltr'}>
-        <button onClick={onBack} className={`mb-12 flex items-center gap-2 text-xs uppercase tracking-widest text-[#B4A79E] hover:text-white transition-colors duration-300 w-fit ${isAr ? 'mr-0 ml-auto' : 'ml-0 mr-auto'}`}>
-          <ArrowLeft className={`w-4 h-4 ${isAr ? 'rotate-180' : ''}`} />
-          <span>{isAr ? 'العودة' : 'Back'}</span>
-        </button>
+      <div className="w-full min-h-screen pt-16 md:pt-20 pb-24 px-6 md:px-24 flex flex-col relative z-20 bg-[#0a0a0a]" dir={isAr ? 'rtl' : 'ltr'}>
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none -z-10" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#0a0a0a_100%)] pointer-events-none -z-10"></div>
+
+        <div className={`sticky top-6 md:top-10 z-50 mb-20 md:mb-32 w-fit ${isAr ? 'mr-0 ml-auto' : 'ml-0 mr-auto'}`}>
+          <button onClick={onBack} className={`flex items-center gap-2 text-xs uppercase tracking-widest text-[#B4A79E] hover:text-white transition-colors duration-300 backdrop-blur-md px-4 py-2.5 rounded-full border border-white/5 bg-zinc-900/50 hover:bg-zinc-800/80`}>
+            <ArrowLeft className={`w-4 h-4 ${isAr ? 'rotate-180' : ''}`} />
+            <span>{isAr ? 'العودة' : 'Back'}</span>
+          </button>
+        </div>
         
         <div className="flex flex-col lg:flex-row gap-16 items-start">
           <div className="lg:w-1/3 sticky top-32">
@@ -88,16 +99,21 @@ export const WorkDetail: React.FC<WorkDetailProps> = ({ id, lang, onBack }) => {
 
   if (id === 'print_packaging') {
     return (
-      <div className="w-full h-full pt-32 pb-24 px-6 md:px-24 flex flex-col relative z-20" dir={isAr ? 'rtl' : 'ltr'}>
-        <button onClick={onBack} className={`mb-12 flex items-center gap-2 text-xs uppercase tracking-widest text-[#FF6B35] hover:text-white transition-colors duration-300 w-fit ${isAr ? 'mr-0 ml-auto' : 'ml-0 mr-auto'}`}>
-          <ArrowLeft className={`w-4 h-4 ${isAr ? 'rotate-180' : ''}`} />
-          <span>{isAr ? 'تراجع' : 'Return'}</span>
-        </button>
+      <div className="w-full min-h-screen pt-16 md:pt-20 pb-24 px-6 md:px-24 flex flex-col relative z-20 bg-zinc-950" dir={isAr ? 'rtl' : 'ltr'}>
+        <div className="absolute inset-0 pointer-events-none -z-10 opacity-30" style={{ backgroundImage: 'repeating-linear-gradient(45deg, rgba(45, 212, 191, 0.03) 0px, rgba(45, 212, 191, 0.03) 1px, transparent 1px, transparent 10px)' }}></div>
+        <div className="absolute top-1/4 left-1/4 w-[40vw] h-[40vw] bg-teal-500/5 blur-[120px] rounded-full pointer-events-none mix-blend-screen -z-10"></div>
+
+        <div className={`sticky top-6 md:top-10 z-50 mb-20 md:mb-32 w-fit ${isAr ? 'mr-0 ml-auto' : 'ml-0 mr-auto'}`}>
+          <button onClick={onBack} className={`flex items-center gap-2 text-xs uppercase tracking-widest text-teal-400 hover:text-white transition-colors duration-300 backdrop-blur-md px-4 py-2.5 rounded-full border border-white/5 bg-zinc-900/50 hover:bg-zinc-800/80`}>
+            <ArrowLeft className={`w-4 h-4 ${isAr ? 'rotate-180' : ''}`} />
+            <span>{isAr ? 'تراجع' : 'Return'}</span>
+          </button>
+        </div>
         
         <div className="mb-16 border-b border-white/10 pb-8 flex justify-between items-end">
           <h1 className="text-4xl md:text-6xl font-sans font-bold text-white tracking-tight uppercase">
             {isAr ? 'مطبوعات' : 'Print &'} <br/>
-            <span className="text-[#FF6B35]">{isAr ? 'وتغليف' : 'Packaging'}</span>
+            <span className="text-teal-400">{isAr ? 'وتغليف' : 'Packaging'}</span>
           </h1>
           <div className="text-right hidden md:block">
             <p className="text-zinc-500 font-mono text-xs mb-2">STRUCTURAL_DESIGN // VISUAL_SYSTEMS</p>
@@ -120,7 +136,7 @@ export const WorkDetail: React.FC<WorkDetailProps> = ({ id, lang, onBack }) => {
                <div className="relative overflow-hidden rounded-lg aspect-[3/4]">
                  <img src={`https://images.unsplash.com/photo-${1551288049 + item}?q=80&w=800&auto=format&fit=crop`} alt="Packaging" className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" />
                </div>
-               <div className="absolute bottom-8 right-8 bg-[#FF6B35] text-black px-4 py-2 font-mono text-xs uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+               <div className="absolute bottom-8 right-8 bg-teal-500 text-black px-4 py-2 font-mono text-xs uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                  {isAr ? 'المشروع' : 'Project'} 0{item}
                </div>
              </motion.div>
@@ -132,14 +148,17 @@ export const WorkDetail: React.FC<WorkDetailProps> = ({ id, lang, onBack }) => {
 
   if (id === 'ui_ux') {
     return (
-      <div className="w-full h-full pt-32 pb-24 px-6 md:px-24 flex flex-col relative z-20" dir={isAr ? 'rtl' : 'ltr'}>
-        <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-teal-500/20 blur-[120px] rounded-full pointer-events-none mix-blend-screen -z-10"></div>
-        <div className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] bg-blue-600/20 blur-[100px] rounded-full pointer-events-none mix-blend-screen -z-10"></div>
+      <div className="w-full min-h-screen pt-16 md:pt-20 pb-24 px-6 md:px-24 flex flex-col relative z-20 bg-[#02080a]" dir={isAr ? 'rtl' : 'ltr'}>
+        <div className="absolute inset-0 pointer-events-none -z-10" style={{ backgroundImage: 'linear-gradient(to right, rgba(45, 212, 191, 0.02) 1px, transparent 1px), linear-gradient(to bottom, rgba(45, 212, 191, 0.02) 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
+        <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-teal-500/10 blur-[120px] rounded-full pointer-events-none mix-blend-screen -z-10"></div>
+        <div className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] bg-blue-600/10 blur-[100px] rounded-full pointer-events-none mix-blend-screen -z-10"></div>
         
-        <button onClick={onBack} className={`mb-12 flex items-center gap-2 text-xs uppercase tracking-widest text-teal-400 hover:text-white transition-colors duration-300 w-fit ${isAr ? 'mr-0 ml-auto' : 'ml-0 mr-auto'} backdrop-blur-md px-4 py-2 rounded-full border border-teal-500/20`}>
-          <ArrowLeft className={`w-4 h-4 ${isAr ? 'rotate-180' : ''}`} />
-          <span>{isAr ? 'رجوع' : 'Back'}</span>
-        </button>
+        <div className={`sticky top-6 md:top-10 z-50 mb-20 md:mb-32 w-fit ${isAr ? 'mr-0 ml-auto' : 'ml-0 mr-auto'}`}>
+          <button onClick={onBack} className={`flex items-center gap-2 text-xs uppercase tracking-widest text-teal-400 hover:text-white transition-colors duration-300 backdrop-blur-md px-4 py-2.5 rounded-full border border-teal-500/20 bg-black/40 hover:bg-black/60`}>
+            <ArrowLeft className={`w-4 h-4 ${isAr ? 'rotate-180' : ''}`} />
+            <span>{isAr ? 'رجوع' : 'Back'}</span>
+          </button>
+        </div>
         
         <h1 className="text-4xl md:text-6xl font-display text-white mb-6 text-center drop-shadow-[0_0_30px_rgba(45,212,191,0.3)]">
           {isAr ? 'واجهات' : 'Digital'} <span className="text-teal-400 font-light italic">{isAr ? 'المستخدم' : 'Experiences'}</span>

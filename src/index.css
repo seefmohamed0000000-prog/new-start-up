@@ -35,4 +35,21 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
+  /* Custom scrollbar for webkit */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent; 
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1); 
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(45, 212, 191, 0.4); /* Teal-400 with opacity */
+  }
 }
+
