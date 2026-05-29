@@ -59,15 +59,19 @@ const SeamlessVideoLoop = ({ src }: { src: string }) => {
   );
 };
 
-const InteractiveBackground = ({ cursorPos, activePage }: { cursorPos: { x: number, y: number }, activePage: string }) => {
+const InteractiveBackground = ({ cursorX, cursorY, activePage }: { cursorX: any, cursorY: any, activePage: string }) => {
   // Use framer-motion spring for smooth trailing of the cursor
   const springX = useSpring(0, { stiffness: 40, damping: 20 });
   const springY = useSpring(0, { stiffness: 40, damping: 20 });
   
   useEffect(() => {
-    springX.set(cursorPos.x - 250); // 250 is half the width of the follower 
-    springY.set(cursorPos.y - 250);
-  }, [cursorPos, springX, springY]);
+    const unsubX = cursorX.on("change", (v: number) => springX.set(v - 250));
+    const unsubY = cursorY.on("change", (v: number) => springY.set(v - 250));
+    return () => {
+      unsubX();
+      unsubY();
+    };
+  }, [cursorX, cursorY, springX, springY]);
 
   return (
     <div className="fixed inset-0 z-0 overflow-hidden bg-black transition-colors duration-1000">
@@ -167,20 +171,18 @@ const CustomCursor = () => {
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
   
-  // Use springs only for size/offset to keep it smooth, but position is immediate
-  const size = useSpring(10, { stiffness: 400, damping: 25 });
-  const offset = useSpring(-5, { stiffness: 400, damping: 25 });
+  // Only spring the size, position is exactly mapped to mouse
+  const size = useSpring(12, { stiffness: 600, damping: 30 });
 
   useEffect(() => {
     size.set(isHovering ? 32 : 12);
-    offset.set(isHovering ? -16 : -6);
-  }, [isHovering, size, offset]);
+  }, [isHovering, size]);
 
   useEffect(() => {
     const updateMousePosition = (e: MouseEvent) => {
-      // Immediate update without state -> no lag
-      cursorX.set(e.clientX + offset.get());
-      cursorY.set(e.clientY + offset.get());
+      // Immediate update without math
+      cursorX.set(e.clientX);
+      cursorY.set(e.clientY);
       
       const target = e.target as HTMLElement;
       setIsHovering(
@@ -194,14 +196,16 @@ const CustomCursor = () => {
     
     window.addEventListener('mousemove', updateMousePosition);
     return () => window.removeEventListener('mousemove', updateMousePosition);
-  }, [cursorX, cursorY, offset]);
+  }, [cursorX, cursorY]);
 
   return (
     <motion.div
-      className="fixed z-[9999] rounded-full pointer-events-none hidden md:block mix-blend-difference bg-white"
+      className="fixed top-0 left-0 z-[9999] rounded-full pointer-events-none hidden md:block mix-blend-difference bg-white"
       style={{
         x: cursorX,
         y: cursorY,
+        translateX: "-50%",
+        translateY: "-50%",
         width: size,
         height: size,
       }}
@@ -322,8 +326,16 @@ export default function App() {
 
   const [lang, setLang] = useState<'en' | 'ar'>('en');
   const t = content[lang];
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [cursorPos, setCursorPos] = useState({ x: -1000, y: -1000 });
+  
+  // Use MotionValue instead of useState to prevent re-renders on mouse move
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const parallaxX = useSpring(mouseX, { stiffness: 50, damping: 30 });
+  const parallaxY = useSpring(mouseY, { stiffness: 50, damping: 30 });
+  
+  const rawCursorX = useMotionValue(-1000);
+  const rawCursorY = useMotionValue(-1000);
+
   const [pageIndex, setPageIndex] = useState(initialPageIndex);
   const [prevIndex, setPrevIndex] = useState(initialPageIndex);
   const [direction, setDirection] = useState(1);
@@ -381,14 +393,16 @@ export default function App() {
   // Subtle parallax effect and precise cursor tracking
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      setCursorPos({ x: e.clientX, y: e.clientY });
-      setMousePosition({
-        x: (e.clientX / window.innerWidth - 0.5) * 20,
-        y: (e.clientY / window.innerHeight - 0.5) * 20,
-      });
+      rawCursorX.set(e.clientX);
+      rawCursorY.set(e.clientY);
+      mouseX.set((e.clientX / window.innerWidth - 0.5) * -20);
+      mouseY.set((e.clientY / window.innerHeight - 0.5) * -20);
     };
     
-    const handleMouseLeave = () => setCursorPos({ x: -1000, y: -1000 });
+    const handleMouseLeave = () => {
+      rawCursorX.set(-1000);
+      rawCursorY.set(-1000);
+    };
 
     const handleWheel = (e: WheelEvent) => {
       // Disallow scroll navigation if we are inside a detail page
@@ -534,7 +548,7 @@ export default function App() {
       </AnimatePresence>
 
       {/* Background Interactive Element */}
-      <InteractiveBackground cursorPos={cursorPos} activePage={activePage} />
+      <InteractiveBackground cursorX={rawCursorX} cursorY={rawCursorY} activePage={activePage} />
       <CustomCursor />
 
       {/* Grain / Noise Overlay for a more analogue cinematic texture */}
@@ -545,8 +559,7 @@ export default function App() {
 
       {/* Header Container with subtle 3D tilt */}
       <motion.div 
-        animate={{ x: mousePosition.x * -1, y: mousePosition.y * -1 }}
-        transition={{ type: "spring", stiffness: 50, damping: 30 }}
+        style={{ x: parallaxX, y: parallaxY }}
         className="fixed top-0 left-0 w-full z-50 pointer-events-none"
       >
         <div className="w-full h-full relative pointer-events-none">
@@ -593,8 +606,7 @@ export default function App() {
 
       {/* Header Container with subtle 3D tilt */}
       <motion.div 
-        animate={{ x: mousePosition.x * -1, y: mousePosition.y * -1 }}
-        transition={{ type: "spring", stiffness: 50, damping: 30 }}
+        style={{ x: parallaxX, y: parallaxY }}
         className="fixed top-0 left-0 w-full z-40"
       >
         <nav className="w-full px-8 py-6 flex items-center justify-between">
