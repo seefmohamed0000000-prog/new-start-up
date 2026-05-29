@@ -2,6 +2,7 @@ import { Globe, Facebook, Linkedin, MessageCircle } from "lucide-react";
 import { motion, useSpring, AnimatePresence, useMotionValue } from "motion/react";
 import React, { useEffect, useState, useRef } from "react";
 import { LampContainer } from "./components/ui/lamp";
+import { WorkDetail } from "./components/WorkDetail";
 
 const XIcon = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" aria-hidden="true" className={className} fill="currentColor">
@@ -208,7 +209,7 @@ const CustomCursor = () => {
   );
 };
 
-const PAGES = ['home', 'about', 'expertise', 'contact', 'thanks'];
+const PAGES = ['home', 'about', 'expertise', 'contact', 'thanks', 'social_media', 'art_direction', 'print_packaging', 'ui_ux'];
 
 const content = {
   en: {
@@ -237,9 +238,10 @@ const content = {
       heading2: "experiences",
       desc: "A multidisciplinary approach allows me to tackle projects from all angles, ensuring a cohesive and striking final product.",
       items: [
-         { title: 'Art Direction', desc: 'Guiding the visual narrative to create cohesive and striking brand worlds.' },
-         { title: 'Motion Graphics', desc: 'Breathing life into static designs with fluid, cinematic animations.' },
-         { title: 'Visual Identity', desc: 'Crafting unique structural design systems that stand out in the dark.' }
+         { id: 'social_media', title: 'Strategic Social Campaigns', desc: 'Crafting engaging digital narratives and posts that convert and resonate.' },
+         { id: 'art_direction', title: 'Art Direction', desc: 'Guiding the visual narrative to create cohesive and striking brand worlds.' },
+         { id: 'print_packaging', title: 'Print & Packaging Design', desc: 'Tangible experiences crafted with premium structural design systems.' },
+         { id: 'ui_ux', title: 'UI/UX & Digital Realities', desc: 'Designing intuitive and immersive digital interfaces that feel alive.' }
       ]
     },
     contact: {
@@ -287,9 +289,10 @@ const content = {
       heading2: "التجارب",
       desc: "يتيح لي النهج متعدد التخصصات معالجة المشاريع من جميع الزوايا، مما يضمن منتجًا نهائيًا متماسكًا وجذابًا.",
       items: [
-         { title: 'الإدارة الفنية', desc: 'توجيه السرد البصري لإنشاء عوالم علامة تجارية متماسكة وجذابة.' },
-         { title: 'الموشن جرافيك', desc: 'بث الحياة في التصاميم الثابتة برسوم متحركة سينمائية سلسة.' },
-         { title: 'الهوية البصرية', desc: 'ابتكار أنظمة هيكلية فريدة تبرز هويتك في وسط الزحام.' }
+         { id: 'social_media', title: 'السوشيال ميديا والحملات الرقمية', desc: 'صناعة قصص رقمية جذابة ومنشورات تحقق نتائج ملموسة وتفاعل حقيقي.' },
+         { id: 'art_direction', title: 'الإدارة الفنية', desc: 'توجيه السرد البصري لإنشاء عوالم علامة تجارية متماسكة وجذابة.' },
+         { id: 'print_packaging', title: 'المطبوعات وتغليف المنتجات', desc: 'تجارب ملموسة بأنظمة تصميم هيكلية متميزة وراقية.' },
+         { id: 'ui_ux', title: 'واجهة وتجربة المستخدم (UI/UX)', desc: 'تصميم واجهات رقمية سلسة وغامرة تنبض بالحياة وتعزز تجربة المستخدم.' }
       ]
     },
     contact: {
@@ -358,6 +361,9 @@ export default function App() {
     const handleMouseLeave = () => setCursorPos({ x: -1000, y: -1000 });
 
     const handleWheel = (e: WheelEvent) => {
+      // Disallow scroll navigation if we are inside a detail page
+      if (pageIndex >= 5) return;
+
       if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
       
       const scrollable = (e.target as Element).closest('.overflow-y-auto');
@@ -375,7 +381,7 @@ export default function App() {
       if (now - lastScrollTime.current < 700) return; // Prevent rapid scrolling but feel responsive
       
       if (Math.abs(e.deltaY) > 20) {
-        if (e.deltaY > 0 && pageIndex < PAGES.length - 1) {
+        if (e.deltaY > 0 && pageIndex < 4) {
            setDirection(1);
            setPrevIndex(pageIndex);
            setPageIndex(p => p + 1);
@@ -401,14 +407,15 @@ export default function App() {
   }, [pageIndex]);
 
   const isVertical = pageIndex === 0 || prevIndex === 0;
-  const transitionData = { direction, isVertical };
+  const isDetailTransition = pageIndex >= 5 || prevIndex >= 5;
+  const transitionData = { direction, isVertical, isDetailTransition };
 
   const pageVariants = {
-    initial: ({ direction, isVertical }: { direction: number, isVertical: boolean }) => ({
-      y: isVertical ? (direction > 0 ? "15%" : "-15%") : 0,
-      x: !isVertical ? (direction > 0 ? "8%" : "-8%") : 0,
+    initial: ({ direction, isVertical, isDetailTransition }: { direction: number, isVertical: boolean, isDetailTransition: boolean }) => ({
+      y: isDetailTransition ? 0 : (isVertical ? (direction > 0 ? "15%" : "-15%") : 0),
+      x: isDetailTransition ? 0 : (!isVertical ? (direction > 0 ? "8%" : "-8%") : 0),
       opacity: 0,
-      scale: 0.98,
+      scale: isDetailTransition ? 0.95 : 0.98,
       filter: "blur(12px)"
     }),
     animate: {
@@ -422,11 +429,11 @@ export default function App() {
         ease: [0.16, 1, 0.3, 1]
       }
     },
-    exit: ({ direction, isVertical }: { direction: number, isVertical: boolean }) => ({
-      y: isVertical ? (direction > 0 ? "-15%" : "15%") : 0,
-      x: !isVertical ? (direction > 0 ? "-8%" : "8%") : 0,
+    exit: ({ direction, isVertical, isDetailTransition }: { direction: number, isVertical: boolean, isDetailTransition: boolean }) => ({
+      y: isDetailTransition ? 0 : (isVertical ? (direction > 0 ? "-15%" : "15%") : 0),
+      x: isDetailTransition ? 0 : (!isVertical ? (direction > 0 ? "-8%" : "8%") : 0),
       opacity: 0,
-      scale: 0.98,
+      scale: isDetailTransition ? 1.05 : 0.98,
       filter: "blur(12px)",
       transition: {
         duration: 0.8,
@@ -568,12 +575,12 @@ export default function App() {
           {/* Liquid Glass Nav Pill - Center */}
           <motion.div 
              animate={{ 
-               opacity: activePage === 'home' || activePage === 'thanks' ? 0 : 1, 
-               y: activePage === 'home' ? -20 : activePage === 'thanks' ? -40 : 0,
-               scale: activePage === 'home' || activePage === 'thanks' ? 0.95 : 1
+               opacity: activePage === 'home' || activePage === 'thanks' || ['social_media', 'art_direction', 'print_packaging', 'ui_ux'].includes(activePage) ? 0 : 1, 
+               y: activePage === 'home' ? -20 : activePage === 'thanks' || ['social_media', 'art_direction', 'print_packaging', 'ui_ux'].includes(activePage) ? -40 : 0,
+               scale: activePage === 'home' || activePage === 'thanks' || ['social_media', 'art_direction', 'print_packaging', 'ui_ux'].includes(activePage) ? 0.95 : 1
              }}
-             transition={{ duration: 0.8, delay: (activePage === 'home' || activePage === 'thanks') ? 0 : 0.4, ease: [0.16, 1, 0.3, 1] }}
-             className={`hidden md:flex items-center gap-5 px-6 py-2.5 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)] relative overflow-hidden group/nav ${activePage === 'home' || activePage === 'thanks' ? 'pointer-events-none' : 'pointer-events-auto'}`}
+             transition={{ duration: 0.8, delay: (activePage === 'home' || activePage === 'thanks' || ['social_media', 'art_direction', 'print_packaging', 'ui_ux'].includes(activePage)) ? 0 : 0.4, ease: [0.16, 1, 0.3, 1] }}
+             className={`hidden md:flex items-center gap-5 px-6 py-2.5 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)] relative overflow-hidden group/nav ${activePage === 'home' || activePage === 'thanks' || ['social_media', 'art_direction', 'print_packaging', 'ui_ux'].includes(activePage) ? 'pointer-events-none' : 'pointer-events-auto'}`}
           >
              {/* Inner glass highlight gradient */}
              <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent opacity-20 pointer-events-none"></div>
@@ -744,7 +751,8 @@ export default function App() {
                        initial={{ opacity: 0, x: 20 }}
                        animate={{ opacity: 1, x: 0 }}
                        transition={{ duration: 0.8, delay: i * 0.2, ease: [0.16, 1, 0.3, 1] }}
-                       className="group flex flex-col sm:flex-row gap-6 sm:gap-12 items-start py-8 border-b border-white/10 hover:border-teal-500/50 transition-colors duration-500"
+                       className="group flex flex-col sm:flex-row gap-6 sm:gap-12 items-start py-8 border-b border-white/10 hover:border-teal-500/50 transition-colors duration-500 cursor-pointer"
+                       onClick={() => handleNav(item.id)}
                      >
                        <div className="text-2xl font-light font-sans text-teal-500/50 w-12 group-hover:text-teal-400 transition-colors duration-500">
                          0{i+1}
@@ -865,6 +873,21 @@ export default function App() {
                   </motion.button>
                 </div>
               </div>
+            </motion.section>
+          )}
+
+          {/* Work Details Pages */}
+          {['social_media', 'art_direction', 'print_packaging', 'ui_ux'].includes(activePage) && (
+            <motion.section 
+              key={`page-${activePage}`}
+              custom={transitionData}
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="absolute inset-0 z-20 min-h-screen overflow-y-auto overflow-x-hidden"
+            >
+              <WorkDetail id={activePage} lang={lang} onBack={() => handleNav('expertise')} />
             </motion.section>
           )}
         </AnimatePresence>
