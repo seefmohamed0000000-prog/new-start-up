@@ -577,34 +577,49 @@ export default function App() {
             }}
             initial={{ opacity: 0, y: -20, top: '48px', left: '50%', x: '-50%' }}
             animate={{
-              top: activePage === 'home' ? '48px' : activePage === 'thanks' ? '80px' : '24px',
-              left: activePage === 'home' || activePage === 'thanks' ? '50%' : '32px',
+              top: activePage === 'home' ? '32vh' : activePage === 'thanks' ? '18vh' : '24px',
+              left: activePage === 'home' || activePage === 'thanks' ? '50%' : '28px',
               x: activePage === 'home' || activePage === 'thanks' ? '-50%' : '0%',
-              y: !isLoading ? 0 : -20,
+              y: activePage === 'home' || activePage === 'thanks' ? '-50%' : (!isLoading ? 0 : -20),
               opacity: !isLoading ? 1 : 0
             }}
-            transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1], delay: !hasStartedIntro ? 3 : 0 }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: !hasStartedIntro ? 3 : 0 }}
             className={`absolute pointer-events-auto cursor-pointer group flex items-center ${activePage === 'thanks' ? 'pointer-events-none' : ''}`}
           >
-            {/* We overlay the two versions and crossfade them to avoid font-loading snaps */}
-            <motion.div
-              className="absolute inset-0 flex items-center justify-center whitespace-nowrap"
-              animate={{ opacity: activePage === 'home' || activePage === 'thanks' ? 1 : 0, scale: activePage === 'home' ? 1 : activePage === 'thanks' ? 0.85 : 0.8 }}
-              transition={{ duration: 0.8, ease: "easeInOut" }}
-            >
-              <h1 className={`text-[12px] sm:text-[14px] font-sans text-white/80 uppercase whitespace-nowrap ${lang === 'en' ? 'tracking-[0.6em] pl-[0.6em]' : ''}`}>
-                Seif Mohamed
-              </h1>
-            </motion.div>
-
-            <motion.div
-              className="flex items-center whitespace-nowrap pl-[0.15em]"
-              animate={{ opacity: activePage === 'home' || activePage === 'thanks' ? 0 : 1, scale: activePage === 'home' ? 1.1 : activePage === 'thanks' ? 1.1 : 1 }}
-              transition={{ duration: 0.8, ease: "easeInOut" }}
-            >
-              <span className="text-xl md:text-2xl font-display tracking-[0.15em] font-semibold text-white group-hover:text-teal-500 transition-colors duration-500">Seif</span>
-              <span className="text-xl md:text-2xl font-display tracking-[0.15em] text-zinc-400 group-hover:text-white transition-colors duration-500 ml-1.5 md:ml-2">Mohamed</span>
-            </motion.div>
+            {activePage === 'home' ? (
+              <motion.div
+                key="home-logo"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.5 }}
+                className="flex items-center justify-center whitespace-nowrap"
+              >
+                <img src="/logo.png" alt="Seif Mohamed Logo" className="h-[220px] sm:h-[320px] md:h-[440px] lg:h-[520px] max-w-[85vw] max-h-[46vh] object-contain brightness-0 invert opacity-95 hover:opacity-100 transition-opacity duration-300 drop-shadow-2xl" />
+              </motion.div>
+            ) : activePage === 'thanks' ? (
+              <motion.div
+                key="thanks-logo"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.5 }}
+                className="flex items-center justify-center whitespace-nowrap"
+              >
+                <img src="/logo.png" alt="Seif Mohamed Logo" className="h-[120px] sm:h-[160px] md:h-[200px] lg:h-[240px] max-w-[80vw] max-h-[25vh] object-contain brightness-0 invert opacity-95 drop-shadow-xl" />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="small-logo"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.5 }}
+                className="flex items-center justify-center whitespace-nowrap"
+              >
+                <img src="/logo.png" alt="Seif Mohamed Logo" className="h-8 sm:h-9 md:h-11 object-contain brightness-0 invert group-hover:opacity-75 transition-opacity duration-300" />
+              </motion.div>
+            )}
           </motion.a>
         </div>
       </motion.div>
